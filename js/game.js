@@ -214,25 +214,26 @@ function update() {
 
 function fireRight () {
 
-    if (game.time.now > shotTimeRight)
-    {
-        shot = shots.getFirstExists(false);
-
-        if (shot)
-        {
-            shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
-            shot.lifespan = 2000;
-            shot.rotation = player1.rotation;
-            game.physics.arcade.velocityFromRotation((player1.rotation + 1.57), 400, shot.body.velocity);
-            shotTimeRight = game.time.now + 500;
-        }
-    }
-
+	fireProjectile(false);
 }
 
 function fireLeft () {
 
-    if (game.time.now > shotTimeLeft)
+    fireProjectile(true);
+}
+
+function fireProjectile(left) {
+
+	if left
+	{
+		result = game.time.now > shotTimeLeft;
+		multiplier = -1;
+	} else
+		result = game.time.now > shotTimeRight;
+		multiplier = 1;
+	}
+
+    if (result)
     {
         shot = shots.getFirstExists(false);
 
@@ -241,11 +242,18 @@ function fireLeft () {
             shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
             shot.lifespan = 2000;
             shot.rotation = player1.rotation;
-            game.physics.arcade.velocityFromRotation((player1.rotation - 1.57), 400, shot.body.velocity);
-            shotTimeLeft = game.time.now + 500;
+            game.physics.arcade.velocityFromRotation((player1.rotation + (multiplier * 1.57)), 400, shot.body.velocity);
+			
+			if (left)
+			{
+				shotTimeLeft = game.time.now + 500;
+			} else {
+				shotTimeRight = game.time.now + 500;
+			}
         }
     }
 }
+
     
 function shipHit (shot, ship) { 
     shot.kill();
