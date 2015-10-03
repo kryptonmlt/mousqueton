@@ -4,7 +4,10 @@ var rocksInfo = [];
 var gameScale = 0.75
 
 $(window).resize(function() { window.resizeGame(); } );
-var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function startGame(){
+    game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+}
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
@@ -14,7 +17,7 @@ function populateShipsRandomly(){
 }
 
 function generateRocks(){
-    var rocksTotal = randomBetween(1,4);
+    var rocksTotal = randomBetween(1,3);
     for(i=0; i < rocksTotal; i++){
         switch(randomBetween(0,2)){
             case 0: rocksInfo[i] = "rock0"; break;
@@ -81,6 +84,14 @@ var angularFacing = 0;
 var explosions;
 //var movementCycle = 0;
 
+function generateSea() {
+    
+    var sea = game.add.sprite(0, 0, 'sea');
+    var seaScaleX = (game.camera.width - sea.width)/sea.width;
+    var seaScaleY = (game.camera.height - sea.height)/sea.height;
+    sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
+}
+
 function create() {
 
     // Game Physics
@@ -98,10 +109,7 @@ function create() {
     }
 
     // SEA Generation
-    var sea = game.add.sprite(0, 0, 'sea');
-	var seaScaleX = (game.camera.width - sea.width)/sea.width;
-	var seaScaleY = (game.camera.height - sea.height)/sea.height;
-	sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
+    generateSea()
 
     // SHIP Generation
     var humanPlayers=0;
@@ -155,7 +163,6 @@ function create() {
         //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
         //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
         //tempShip.scale.setTo(playerScaleX, playerScaleY);
-
     }
        
 
@@ -166,9 +173,33 @@ function create() {
     var rockYInc = game.world.height/rocksInfo.length;
         console.log("world size:" +game.world.width+", "+game.world.height);
     for(i=0; i < rocksInfo.length; i++){
-        var rockX = randomBetween(rockXInc*i, rockXInc*i+rockXInc);
-        var rockY = randomBetween(rockYInc*i, rockYInc*i+rockYInc);
-        console.log("Rock cords:" +rockX+", "+rockY);
+        found=true;
+        var tries=0;
+        var rockX =0;
+        var rockY =0;
+        var isDone=false;
+        do{
+            found =true;
+            if(!isDone && tries>10){
+                rockX+=20;
+                rockY+=20;
+                for(j=0; j<gameShips.length; j++){                
+                    if(DoBoxesIntersect(rockX,320, rockY,200,gameShips[j].x,gameShips[j].body.width,gameShips[j].y,gameShips[j].body.height)){
+                        found = false;
+                    }
+                }
+            }else{
+                rockX = randomBetween(rockXInc*i, rockXInc*i+rockXInc);
+                rockY = randomBetween(rockYInc*i, rockYInc*i+rockYInc);
+                for(j=0; j<gameShips.length; j++){                
+                    if(DoBoxesIntersect(rockX,320, rockY,200,gameShips[j].x,gameShips[j].body.width,gameShips[j].y,gameShips[j].body.height)){
+                        found = false;
+                    }
+                }
+            }
+            tries++;
+        }while(!found && tries < 50);
+        console.log("Rock cords:" +rockX+", "+rockY+" VALID: "+found);
         var tempRock = rocks.create(rockX, rockY, rocksInfo[i]);
         var rocksScaleX = (ROCKS_SCALE*game.camera.width)/tempRock.width;
         var rocksScaleY = (ROCKS_SCALE*game.camera.height)/tempRock.height;
@@ -191,6 +222,11 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
+}
+
+function DoBoxesIntersect(aX, aWidth, aY, aHeight, bX, bWidth, bY, bHeight) {
+  var result= (Math.abs(aX - bX) * 2 < (aWidth + bWidth)) && (Math.abs(aY - bY) * 2 < (aHeight + bHeight));
+  return result;
 }
 
 function getShipFromType(hull){
