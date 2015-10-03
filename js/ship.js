@@ -21,4 +21,7 @@ function Ship(id, hull, weapon, specialPower, isHuman, teamId, health, accelerat
   this.teamId = teamId;
   this.health = health;
   this.acceleration = acceleration;
+  
+  this.currentSpeed = 0;
+  this.angularFacing = 0;
 }

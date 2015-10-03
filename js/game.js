@@ -7,14 +7,6 @@ $(window).resize(function() { window.resizeGame(); } );
 var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function populateShipsRandomly(){
-    ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
-    ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, true, 0, 1000, 50);
-    ships[2] = new Ship(2, shipType.BIG, new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 1, 1000, 50);
-    ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, true, 1, 1000, 50);
-    ships[0] = new Ship(0, shipType.SMALL,  new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
-    ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
-    ships[2] = new Ship(2, shipType.BIG,    new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
-    ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
     ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
     ships[1] = new Ship(1, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
     ships[2] = new Ship(2, hull.BIG,    new Weapon(gun.BRIGADE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
@@ -371,52 +363,4 @@ function shipHit (shot, ship) {
 }
 function rockHit (rock, shot) { 
     shot.kill();
-}
-
-var shipType = {
-    SMALL: 0, // fastest but weakest
-    MEDIUM: 1,
-    BIG: 2 // strongest but slowest
-};
-
-var specialPower = {
-    ACCEL: 0, // increases acceleration
-    DAMAGE: 1, // increases damage output
-    STEALTH: 2 //goes invisible
-};
-
-var projectileType = {
-    PERPENDICULAR: 0 // bullets shoot perpendicular to the ship
-};
-
-var weaponType = {
-    SNIPER: 0, //slowest - high damage
-    BARRAGE: 1, //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: 2 // fastest firing - low damage
-};
-
-function Projectile(projectileType, projectileSpeed, damage){
-    this.projectileType - projectileType;
-    this.projectileSpeed = projectileSpeed;
-    this.damage = damage;
-}
-
-function Weapon(weaponType, projectile, reloadTime){
-    this.weaponType = weaponType;
-    this.projectile = projectile;
-    this.reloadTime = reloadTime;
-}
-
-function Ship(id, shipType, weapon, specialPower, human, teamId, health, acceleration) {
-  this.id = id;
-  this.shipType = shipType;
-  this.weapon = weapon;
-  this.specialPower = specialPower;
-  this.human = human;
-  this.teamId = teamId;
-  this.health = health;
-  this.acceleration = acceleration;
-  
-  this.currentSpeed = 0;
-  this.angularFacing = 0;
 }
