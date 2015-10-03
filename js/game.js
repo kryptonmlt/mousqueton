@@ -177,6 +177,7 @@ function create() {
                 case 3 : player4 = gameShips[i]; humanPlayers++; break;
             }
         }
+
     }
        
 
