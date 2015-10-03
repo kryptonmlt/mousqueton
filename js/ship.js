@@ -26,3 +26,15 @@ function Ship(id, hull, weapon, projectile, specialPower, isHuman, teamId) {
   
   sessionStorage.setItem("SHIP" + id, teamId);
 }
+
+function hull( health, acceleration, turnSpeed) {
+    this.health = health;
+    this.acceleration = acceleration;
+    this.turnSpeed = turnSpeed; 
+}
+
+function projectile(direction, speed, damage){
+    this.direction = direction;
+    this.speed = speed;
+    this.damage = damage;
+}

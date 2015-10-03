@@ -6,7 +6,7 @@ var gameScale = 1;
 var gameWidth = 800;
 var gameHeight = 600;
 
-//Enums
+    //Enums
 
 var HULL = {
     SMALL: new hull(75, 0.7, 0.7), // fastest but weakest
@@ -32,7 +32,6 @@ var specialPower = {
     STEALTH: 2 //goes invisible
 };
 
-// End Enums
 
 $(window).resize(function() { window.resizeGame(); } );
 
@@ -74,6 +73,10 @@ function resizeGame() {
 }
 
 function preload() {
+    
+
+
+// End Enums
 
     game.load.image('sea', 'assets/water0.png');
     game.load.image('ship0', 'assets/ship0.png');
@@ -156,7 +159,16 @@ function create() {
         }
         tempShip.currentSpeed = 0;
         tempShip.angularFacing = 0;
-        tempShip.Health = 100;
+        
+        tempShip.health = ships[i].health;
+        tempShip.specialPower = ships[i].specialPower;
+        tempShip.damage = ships[i].damage;
+        tempShip.reloadTime = ships[i].reloadTime;
+        tempShip.range = ships[i].range;
+        tempShip.acceleration = ships[i].acceleration;
+        tempShip.turnSpeed = ships[i].turnSpeed;
+        tempShip.projectileSpeed = ships[i].speed;
+        
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
         tempShip.body.drag.set(10);
@@ -177,7 +189,6 @@ function create() {
                 case 3 : player4 = gameShips[i]; humanPlayers++; break;
             }
         }
-
     }
        
 
@@ -441,6 +452,7 @@ function fireRight (ship) {
                 game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), ship.projectileSpeed, shot.body.velocity);
                 shotTimeRight = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
+                shot.damage = ship.damage;
             }
         }  
     }
@@ -461,15 +473,16 @@ function fireLeft (ship) {
                 game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), ship.projectileSpeed, shot.body.velocity);
                 shotTimeLeft = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
+                shot.damage = ship.damage;
             }
         }
     }
 }
     
 function shipHit (shot, ship) {
-    shot.kill();
     ship.health -= shot.damage;
-    if(ship.health <= 0){
+    shot.kill();
+    if(ship.health <= 0 || isNaN(ship.health)){
         ship.kill();
     }
 }
