@@ -1,3 +1,8 @@
 var shipCount = 4;
 
-alert(shipCount + " Ships");
+function showShips()
+{
+    alert("Using " + shipCount + " Ships");
+}
+
+showShips();
