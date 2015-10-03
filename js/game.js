@@ -217,10 +217,10 @@ function update() {
         angularFacing += 15;
     }
     
-    if (game.time.now >= movementCycle){
-        player1.position.set(ghost.position);
-        movementCycle = game.time.now + 2000;
-    }
+    //if (game.time.now >= movementCycle){
+    //    player1.position.set(ghost.position);
+    //    movementCycle = game.time.now + 2000;
+    //}
     
     game.physics.arcade.velocityFromRotation(player1.rotation, currentSpeed, player1.body.velocity);
 
