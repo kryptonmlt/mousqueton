@@ -45,13 +45,15 @@ function pickFromAvailableTeams()
 var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'menu', { preload: preload, create: create, update: update });
 
 function preload() {
-    console.log("preload")
+    console.log("preload");
+    game.load.image('sea', 'assets/water0.png');
 }
 
 function create() {
-    console.log("create")
+    console.log("create");
+    generateSea();
 }
 
 function update() {
-    console.log("update")
+    console.log("update");
 }

@@ -80,16 +80,21 @@ var rocks;
 var angularFacing = 0;
 var movementCycle = 0;
 
+function generateSea() {
+    
+    var sea = game.add.sprite(0, 0, 'sea');
+    var seaScaleX = (game.camera.width - sea.width)/sea.width;
+    var seaScaleY = (game.camera.height - sea.height)/sea.height;
+    sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
+}
+
 function create() {
 
     // Game Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     // SEA Generation
-    var sea = game.add.sprite(0, 0, 'sea');
-	var seaScaleX = (game.camera.width - sea.width)/sea.width;
-	var seaScaleY = (game.camera.height - sea.height)/sea.height;
-	sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
+    generateSea()
 
     // SHIP Generation
     var humanPlayers=0;
