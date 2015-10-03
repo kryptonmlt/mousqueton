@@ -28,9 +28,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload() {
 
-    game.load.image('sky', 'assets/sky.png');
-    game.load.image('ground', 'assets/platform.png');
-    game.load.image('star', 'assets/star.png');
+    game.load.image('sea', 'assets/water0.png');
     game.load.image('ship', 'assets/ship2.png', 32, 48);
 
 }
@@ -49,7 +47,7 @@ function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     //  A simple background for our game
-    game.add.sprite(0, 0, 'sky');
+    game.add.sprite(0, 0, 'sea');
 
     // The player and its settings
     player = game.add.sprite(game.world.width/2, game.world.height/2, 'ship');
