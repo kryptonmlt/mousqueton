@@ -1,8 +1,10 @@
 var ships = [];
 var rocksInfo = [];
 
+var gameScale = 0.75
+
 $(window).resize(function() { window.resizeGame(); } );
-var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
@@ -23,8 +25,8 @@ function generateRocks(){
 }
 
 function resizeGame() {
-    var height = $(window).height() * 0.75;
-    var width = $(window).width() * 0.75;
+    var height = $(window).height() * gameScale;
+    var width = $(window).width() * gameScale;
     console.log("Setting screen size to: ("+width+","+height+")");
         
     game.width = width;
@@ -163,25 +165,28 @@ function randomBetween(min, max){
 
 function update() {
     
+    var speedChange = 0.5;
+    var angularVelocityChange = 30;
+    
     if (cursors.up.isDown)
     {
-        currentSpeed += 0.5;
+        currentSpeed += speedChange;
     }
     else
     {
         if (currentSpeed > 0)
         {
-           currentSpeed -= 0.5;
+           currentSpeed -= speedChange;
         }
     }
 
     if (cursors.left.isDown)
     {
-        player1.body.angularVelocity = -30;
+        player1.body.angularVelocity = -1 * angularVelocityChange;
     }
     else if (cursors.right.isDown)
     {
-        player1.body.angularVelocity = 30;
+        player1.body.angularVelocity = angularVelocityChange;
     }
     else
     {
