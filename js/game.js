@@ -172,14 +172,12 @@ function update() {
     
     if (cursors.up.isDown)
     {
-        //game.physics.arcade.velocityFromRotation(ghost.rotation, 30, ghost.body.acceleration);
         currentSpeed += speedChange;
     }
     else
     {
         if (currentSpeed > 0)
         {
-            //ghost.body.velocity.set(0);
            currentSpeed -= speedChange;
         }
     }
