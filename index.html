@@ -177,6 +177,28 @@ function fireLeft () {
     }
 
 }
+
+function Projectile(projectileTypeId, projectileSpeed, power){
+    this.projectileTypeId - projectileTypeId;
+    this.projectileSpeed = projectileSpeed;
+    this.power = power;
+}
+
+function weapon(weaponTypeId, projectile){
+    this.weaponTypeId = weaponTypeId;
+    this.projectile = projectile;
+}
+
+function Ship(id, shipTypeId, weapon, specialPower, human, team_id, health, acceleration) {
+  this.id = id;
+  this.shipTypeId = shipTypeId;
+  this.weapon = weapon;
+  this.specialPower = specialPower;
+  this.human = human;
+  this.team_id = team_id;
+  this.health = health;
+  this.acceleration = acceleration;
+}
 </script>
 </body>
 </html>
