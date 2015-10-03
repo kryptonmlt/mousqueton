@@ -1,7 +1,7 @@
 var ships = [];
 var rocksInfo = [];
 
-var gameScale = 1.25;
+var gameScale = 1;
 
 var gameWidth = 800;
 var gameHeight = 600;
