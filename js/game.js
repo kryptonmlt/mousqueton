@@ -83,6 +83,7 @@ var rocks;
 
 var angularFacing = 0;
 var explosions;
+var survivors;
 //var movementCycle = 0;
 
 function addBackground(assetName) {
@@ -138,6 +139,7 @@ function create() {
         }
         tempShip.currentSpeed = 0;
         tempShip.angularFacing = 0;
+        tempShip.Health = 10;
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
         tempShip.body.drag.set(10);
@@ -380,6 +382,9 @@ function update() {
 
     //AI
     aI();
+    
+    //Victory Check
+    checkWinner()
       
 }
 
@@ -441,4 +446,27 @@ function shipHit (shot, ship) {
 }
 function rockHit (rock, shot) { 
     shot.kill();
+}
+
+function checkWinner(){
+    survivors = 0;
+    var winner;
+    for (i in gameShips){
+        var ship = gameShips[i];
+        if (ship.health > 0){
+            survivors++;
+            winner = ship.shipId;
+        }
+    }
+    if (survivors == 1){
+        //Win Screen
+        var winText = game.add.text(20, game.height/2, "Player " + (winner+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
+        winText.stroke = "#de77ae";
+        winText.strokeThickness = 16;
+        //  Apply the shadow to the Stroke and the Fill (this is the default)
+        winText.setShadow(2, 2, "#333333", 2, true, true);
+    }
+    else if (survivors == 0){
+        //Draw Screen
+    }
 }
