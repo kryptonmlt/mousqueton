@@ -21,7 +21,7 @@
 <script type="text/javascript">
 
 var ships = [];
-var rocks = [];
+var rocksInfo = [];
 
 $(window).resize(function() { window.resizeGame(); } );
 var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
@@ -34,12 +34,12 @@ function populateShipsRandomly(){
 }
 
 function generateRocks(){
-    var rocksTotal = Math.floor((Math.random() * 4) + 2);
+    var rocksTotal = randomBetween(1,4);
     for(i=0; i < rocksTotal; i++){
-        switch(Math.floor(Math.random() * 2)){
-            case 0: rocks[i] = "rock0"; break;
-            case 1: rocks[i] = "rock1"; break;
-            case 2: rocks[i] = "rock2"; break;
+        switch(randomBetween(0,2)){
+            case 0: rocksInfo[i] = "rock0"; break;
+            case 1: rocksInfo[i] = "rock1"; break;
+            case 2: rocksInfo[i] = "rock2"; break;
         }
     }
 }
@@ -70,7 +70,7 @@ function preload() {
 
     populateShipsRandomly();
     generateRocks();
-
+    console.log("Generated "+rocksInfo.length+" rocks");
 }
 
 var team1;
@@ -85,6 +85,7 @@ var shot;
 var shotTimeLeft = 0;
 var shotTimeRight = 0;
 var shotAngle = 0;
+var rocks;
 
 function create() {
 
@@ -108,9 +109,19 @@ function create() {
     //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
     //team1.scale.setTo(playerScaleX, playerScaleY);
 
+    rocks = game.add.group();
+    rocks.enableBody = true;
+    var rockXInc = game.world.width/rocksInfo.length;
+    var rockYInc = game.world.height/rocksInfo.length;
+        console.log("world size:" +game.world.width+", "+game.world.height);
+    for(i=0;i<rocksInfo.length;i++){
+        var rockX = randomBetween(rockXInc*i,rockXInc*i+rockXInc);
+        var rockY = randomBetween(rockYInc*i,rockYInc*i+rockYInc);
+        console.log("Rock cords:" +rockX+", "+rockY);
+        rocks.create(rockX, rockY, rocksInfo[i]);
+    }
 
     //  Player physics properties. Give the little guy a slight bounce.
-
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
     player.body.drag.set(10);
@@ -138,6 +149,10 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
+}
+
+function randomBetween(min, max){
+    return Math.floor((Math.random() * (max-min+1)) + min);
 }
 
 function update() {
