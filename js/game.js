@@ -54,6 +54,8 @@ function preload() {
 }
 
 var teams = [];
+var gameShips = [];
+var gameRocks = [];
 var player1;
 var player2;
 var currentSpeed = 0;
@@ -84,8 +86,11 @@ function create() {
     var shipXInc = game.world.width/7;
     var shipYInc = game.world.height/7;
     for(i=0; i < ships.length; i++){
-        teams[ships[i].teamId] = game.add.group();
-        teams[ships[i].teamId].enableBody=true;
+        if(!teams[ships[i].teamId]){
+            console.log("Creating team "+ships[i].teamId+" for ship: "+i);
+            teams[ships[i].teamId] = game.add.group();
+            teams[ships[i].teamId].enableBody=true;
+        }
         var shipX=0;
         var shipY=0;
         if(i < 2){            
@@ -97,6 +102,9 @@ function create() {
         }
         console.log("Ship cords:" +shipX+", "+shipY);
         tempShip = teams[ships[i].teamId].create( shipX, shipY, getShipFromType(ships[i].shipType));
+        if(i >= 2){
+            tempShip.angle+=180;
+        }
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
         tempShip.body.drag.set(10);
@@ -109,6 +117,7 @@ function create() {
                 case 1 : player2 = tempShip; humanPlayers++; break;
             }
         }
+        gameShips[i]=tempShip;
 
         //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
         //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
@@ -130,6 +139,8 @@ function create() {
         var rocksScaleX = (ROCKS_SCALE*game.camera.width)/tempRock.width;
         var rocksScaleY = (ROCKS_SCALE*game.camera.height)/tempRock.height;
         tempRock.scale.setTo(rocksScaleX, rocksScaleY);
+        tempRock.body.immovable = true;
+        gameRocks[i]=tempRock;
     }
 
     // SHOT Generation
@@ -190,29 +201,43 @@ function update() {
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.Z))
     {
-        fireLeft();
+        fireLeft(player1);
     }
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.X))
     {
-        fireRight();
+        fireRight(player1);
     }
     
     game.physics.arcade.velocityFromRotation(player1.rotation, currentSpeed, player1.body.velocity);
 
-    //collision between teams and shots
-    for(i=0; i < teams.length; i++){
-        for(j=0; j < teams.length; j++){
+    // COLLISION CHECKS
+
+    // Ships && Rocks
+    for(i=0; i < gameShips.length; i++){
+        for(j=0; j < gameShips.length; j++){
             if(i != j && j > i){
-                game.physics.arcade.collide(teams[i], teams[j]);                
+                game.physics.arcade.collide(gameShips[i], gameShips[j]);                
             }
         }
-        game.physics.arcade.overlap(shots, teams[i], shipHit, null, this);
+        for(j=0; j < gameRocks.length; j++){
+                game.physics.arcade.collide(gameShips[i], gameRocks[j]);
+        }
+    }
+
+    //Rocks
+    for(i=0; i < teams.length; i++){
+        //game.physics.arcade.overlap(shots, teams[i], shipHit, null, this);
+    }
+
+    //Rocks
+    for(i=0; i < gameRocks.length; i++){
+        game.physics.arcade.overlap(shots, gameRocks[i], rockHit, null, this);
     }
       
 }
 
-function fireRight () {
+function fireRight (ship) {
 
     if (game.time.now > shotTimeRight)
     {
@@ -220,17 +245,17 @@ function fireRight () {
 
         if (shot)
         {
-            shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
+            shot.reset(ship.body.x + ship.body.halfWidth, ship.body.y + ship.body.halfHeight);
             shot.lifespan = 2000;
-            shot.rotation = player1.rotation;
-            game.physics.arcade.velocityFromRotation((player1.rotation + 1.57), 400, shot.body.velocity);
+            shot.rotation = ship.rotation;
+            game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), 400, shot.body.velocity);
             shotTimeRight = game.time.now + 500;
         }
     }
 
 }
 
-function fireLeft () {
+function fireLeft (ship) {
 
     if (game.time.now > shotTimeLeft)
     {
@@ -238,16 +263,19 @@ function fireLeft () {
 
         if (shot)
         {
-            shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
+            shot.reset(ship.body.x + ship.body.halfWidth, ship.body.y + ship.body.halfHeight);
             shot.lifespan = 2000;
-            shot.rotation = player1.rotation;
-            game.physics.arcade.velocityFromRotation((player1.rotation - 1.57), 400, shot.body.velocity);
+            shot.rotation = ship.rotation;
+            game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), 400, shot.body.velocity);
             shotTimeLeft = game.time.now + 500;
         }
     }
 }
     
 function shipHit (shot, ship) { 
+    shot.kill();
+}
+function rockHit (rock, shot) { 
     shot.kill();
 }
 
