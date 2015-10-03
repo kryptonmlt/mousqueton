@@ -42,19 +42,19 @@ function pickFromAvailableTeams()
 }
 
 
-var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'menu', { preload: preload, create: create, update: update });
+var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'menu', { preload: menuPreload, create: menuCreate, update: menuUpdate });
 
-function preload() {
+function menuPreload() {
     console.log("preload");
     game.load.image('sea', 'assets/water0.png');
 }
 
-function create() {
+function menuCreate() {
     console.log("create");
     generateSea();
     startGame();
 }
 
-function update() {
+function menuUpdate() {
     console.log("update");
 }
