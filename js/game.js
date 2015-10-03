@@ -41,17 +41,10 @@ function startGame(){
 }
 
 function populateShipsRandomly(){
-<<<<<<< HEAD
     ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.NORMAL, specialPower.ACCEL, true, 0);
     ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.DAMAGE, true, 0);
     ships[2] = new Ship(2, HULL.BIG,    GUN.BRIGADE, PROJECTILE.NORMAL, specialPower.ACCEL, true, 1);
     ships[3] = new Ship(3, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.STEALTH, true, 1);
-=======
-    ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
-    ships[1] = new Ship(1, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
-    ships[2] = new Ship(2, hull.BIG,    new Weapon(gun.BRIGADE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
-    ships[3] = new Ship(3, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
->>>>>>> bc33340f4527f94e6f5f84df8eda3a4dab77b966
 }
 
 function generateRocks(){
@@ -110,7 +103,6 @@ var player4;
 var cursors;
 var SMALL_SHIP_SCALE = 0.05;
 var ROCKS_SCALE = 0.2;
-var speedChange = 0.5;
 
 var shots;
 var shot;
@@ -173,15 +165,8 @@ function create() {
         tempShip.body.maxVelocity = 30;
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
-<<<<<<< HEAD
-        
-=======
         tempShip.isHuman = ships[i].isHuman;
-        //Wake Generation
-       // wake = tempShip.addChild(game.add.emitter(tempShip.x, tempShip.y, 50));
-        //wake.makeParticles('diamond');
-        //wake.start(false,1000, 10);
->>>>>>> bc33340f4527f94e6f5f84df8eda3a4dab77b966
+
 
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
@@ -192,9 +177,6 @@ function create() {
                 case 3 : player4 = gameShips[i]; humanPlayers++; break;
             }
         }
-        //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
-        //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
-        //tempShip.scale.setTo(playerScaleX, playerScaleY);
     }
        
 
