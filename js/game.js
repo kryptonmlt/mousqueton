@@ -2,7 +2,7 @@ var ships = [];
 var rocksInfo = [];
 
 $(window).resize(function() { window.resizeGame(); } );
-var game = new Phaser.Game($(window).width() * 0.75, $(window).height() * 0.75, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
@@ -214,26 +214,7 @@ function update() {
 
 function fireRight () {
 
-    fireProjectile(false);
-}
-
-function fireLeft () {
-
-    fireProjectile(true);
-}
-
-function fireProjectile(left) {
-
-	if (left)
-	{
-		result = game.time.now > shotTimeLeft;
-		multiplier = -1;
-	} else
-		result = game.time.now > shotTimeRight;
-		multiplier = 1;
-	}
-
-    if (result)
+    if (game.time.now > shotTimeRight)
     {
         shot = shots.getFirstExists(false);
 
@@ -242,18 +223,29 @@ function fireProjectile(left) {
             shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
             shot.lifespan = 2000;
             shot.rotation = player1.rotation;
-            game.physics.arcade.velocityFromRotation((player1.rotation + (multiplier * 1.57)), 400, shot.body.velocity);
-			
-			if (left)
-			{
-				shotTimeLeft = game.time.now + 500;
-			} else {
-				shotTimeRight = game.time.now + 500;
-			}
+            game.physics.arcade.velocityFromRotation((player1.rotation + 1.57), 400, shot.body.velocity);
+            shotTimeRight = game.time.now + 500;
+        }
+    }
+
+}
+
+function fireLeft () {
+
+    if (game.time.now > shotTimeLeft)
+    {
+        shot = shots.getFirstExists(false);
+
+        if (shot)
+        {
+            shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
+            shot.lifespan = 2000;
+            shot.rotation = player1.rotation;
+            game.physics.arcade.velocityFromRotation((player1.rotation - 1.57), 400, shot.body.velocity);
+            shotTimeLeft = game.time.now + 500;
         }
     }
 }
-
     
 function shipHit (shot, ship) { 
     shot.kill();
