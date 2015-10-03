@@ -122,7 +122,12 @@ function create() {
                 case 1 : player2 = tempShip; humanPlayers++; break;
             }
         }
+<<<<<<< HEAD
         gameShips[i]=tempShip;
+
+=======
+        
+>>>>>>> 80485e32b4c4355ce430712342724529bc4c6c2e
         //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
         //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
         //tempShip.scale.setTo(playerScaleX, playerScaleY);
@@ -182,12 +187,14 @@ function update() {
     
     if (cursors.up.isDown)
     {
+        //game.physics.arcade.velocityFromRotation(ghost.rotation, 30, ghost.body.acceleration);
         currentSpeed += speedChange;
     }
     else
     {
         if (currentSpeed > 0)
         {
+            //ghost.body.velocity.set(0);
            currentSpeed -= speedChange;
         }
     }
