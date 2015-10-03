@@ -1,5 +1,6 @@
 var shipCount = 2;
 var assignedTeams = [];
+var possibleShips = [2, 3, 4];
 
 function showShips()
 {
@@ -38,4 +39,16 @@ function pickFromAvailableTeams()
     
     showShips();
     console.log("Teams: " + assignedTeams);
+}
+
+
+var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+}
+
+function create() {
+}
+
+function update() {
 }
