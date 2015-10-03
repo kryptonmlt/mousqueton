@@ -29,6 +29,33 @@ body {
     margin: 0 auto;
 }
 
+#game
+{
+    border-width: 1em 0;
+    border-style: solid;
+    width: 700px;
+    height: 525px;
+    background-image: url("../assets/water0.png");
+}
+
+.content
+{
+    display: inline-block;
+    border: 1em solid;
+    margin: 1em 0;
+
+}
+
+#menu
+{
+    background: #25a4c4;
+    width: 304px;
+    margin-top: 3em;
+    border: 0.5em solid;
+    padding-bottom: 0.1em;
+    width:304px;
+}
+
 .display
 {
     margin: 0 auto;
