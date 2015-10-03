@@ -1,3 +1,3 @@
 var shipCount = 4;
 
-document.write(shipCount + " Ships")
+alert(shipCount + " Ships");
