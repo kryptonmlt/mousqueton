@@ -169,7 +169,7 @@ function create() {
                 }
             }
             tries++;
-        }while(!found && tries <50);
+        }while(!found && tries < 50);
         console.log("Rock cords:" +rockX+", "+rockY+" VALID: "+found);
         var tempRock = rocks.create(rockX, rockY, rocksInfo[i]);
         var rocksScaleX = (ROCKS_SCALE*game.camera.width)/tempRock.width;
