@@ -74,9 +74,8 @@ function create() {
     team2 = game.add.group();
     team1.enableBody = true;
     team2.enableBody = true;
-    player = team1.create(game.world.width/3, game.world.height/3, 'ship');
     badGuy = team2.create(game.world.width/1.5, game.world.height/1.5, 'ship');
-    player = game.add.sprite(game.world.width/2, game.world.height/2, 'ship');
+    player = team1.create(game.world.width/3, game.world.height/3, 'ship');
 	var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/player.width;
 	var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
 	player.scale.setTo(playerScaleX, playerScaleY);
