@@ -25,7 +25,6 @@ var AVAILABLE_TEAMS = {
 
 function pickFromAvailableTeams()
 {
-    showShips()
     
     if (shipCount === 2) {
        assignedTeams = AVAILABLE_TEAMS.TWO_1v1;
@@ -36,7 +35,7 @@ function pickFromAvailableTeams()
     } else {
        assignedTeams = AVAILABLE_TEAMS.UNASSIGNED;
     }
-
-    console.log("Ships: " + shipCount);
+    
+    showShips();
     console.log("Teams: " + assignedTeams);
 }
