@@ -52,6 +52,7 @@ function preload() {
 function create() {
     console.log("create");
     generateSea();
+    startGame();
 }
 
 function update() {
