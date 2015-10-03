@@ -61,6 +61,7 @@ function preload() {
 var teams = [];
 var gameShips = [];
 var gameRocks = [];
+var score  = [];
 var player1;
 var player2;
 var player3;
@@ -355,7 +356,16 @@ function update() {
     for(i=0; i < gameRocks.length; i++){
         game.physics.arcade.overlap(shots, gameRocks[i], rockHit, null, this);
     }
+
+    //AI
+    aI();
       
+}
+
+function aI(){
+    for(i=0; i<gameShips.length; i++){
+
+    }
 }
 
 function fireRight (ship) {
@@ -374,7 +384,6 @@ function fireRight (ship) {
             shot.shipId=ship.shipId;
         }
     }
-
 }
 
 function fireLeft (ship) {
