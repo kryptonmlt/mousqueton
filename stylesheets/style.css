@@ -6,7 +6,7 @@ body {
 	text-align: center;
 }        
 
-#content
+.container
 {
-    margin: 50px;
+    margin: 0 auto;
 }
