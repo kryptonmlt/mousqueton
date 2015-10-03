@@ -214,7 +214,7 @@ function update() {
 
 function fireRight () {
 
-	fireProjectile(false);
+    fireProjectile(false);
 }
 
 function fireLeft () {
@@ -224,7 +224,7 @@ function fireLeft () {
 
 function fireProjectile(left) {
 
-	if left
+	if (left)
 	{
 		result = game.time.now > shotTimeLeft;
 		multiplier = -1;
