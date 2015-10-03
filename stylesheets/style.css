@@ -1,7 +1,12 @@
+@font-face {
+    font-family: "My Custom Font";
+    src: url("../fonts/emulogic.ttf") format("truetype");
+}
+
 body {
 	margin: 0;
 	background: #25a4c4;
-	font-family: Arial;
+	font-family: "My Custom Font", Courier, Arial;
 	color: #f7f44c;
 	text-align: center;
 }        
