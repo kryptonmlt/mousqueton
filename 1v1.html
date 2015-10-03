@@ -7,15 +7,66 @@
     
     <!-- engine scripts -->
     <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
-    <script type="text/javascript" src="js/phaser.min.js"></script>
-    <!-- game scripts -->
-    <script type="text/javascript" src="js/projectile.js"></script>
-    <script type="text/javascript" src="js/weapon.js"></script>
-    <script type="text/javascript" src="js/ship.js"></script>
-    <script type="text/javascript" src="js/game.js"></script>
-    <script type="text/javascript" src="js/menu.js"></script>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
     
 </head>
 <body>
+    <div align="center">
+        <img src="assets/ship0.png" alt="Pirate Ship" style="PADDING-TOP:100px;width:125px;height:25px;">
+        <img src="assets/ship1.png" alt="Pirate Ship" style="PADDING-TOP:100px;width:200px;height:40px;">
+        <img src="assets/ship2.png" alt="Pirate Ship" style="PADDING-TOP:100px;width:250px;height:50px;">
+        <table style="width:70%" cellpadding="10">
+          <tr>
+            <td>Player 1</td>
+            <td>Player 2</td> 
+          </tr>
+          <tr>
+            <td>
+          Hull:<br>      
+                <input type="radio" name="p1Ship" value="Galley">Galley
+                <input type="radio" name="p1Ship" value="Barque">Barque
+                <input type="radio" name="p1Ship" value="Yacht">Yacht
+            </td>
+            <td>
+          Hull:<br>          
+                <input type="radio" name="p2Ship" value="Galley">Galley
+                <input type="radio" name="p2Ship" value="Barque">Barque
+                <input type="radio" name="p2Ship" value="Yacht">Yacht
+            </td>
+          </tr>
+          <tr>
+            <td>
+          Weapon:<br>      
+                <input type="radio" name="p1Weapon" value="Sniper">Sniper
+                <input type="radio" name="p1Weapon" value="Barrage">Barrage
+                <input type="radio" name="p1Weapon" value="Brigade">Brigade
+            </td>
+            <td>
+          Weapon:<br>          
+                <input type="radio" name="p2Weapon" value="Sniper">Sniper
+                <input type="radio" name="p2Weapon" value="Barrage">Barrage
+                <input type="radio" name="p2Weapon" value="Brigade">Brigade
+            </td>
+          </tr>
+          <tr>
+            <td>
+          Ammo:<br>      
+                <input type="radio" name="p1Ammo" value="ArmorPiercing">Armor Piercing
+                <input type="radio" name="p1Ammo" value="Normal">Normal
+                <input type="radio" name="p1Ammo" value="LightPiercing">Light Piercing
+            </td>
+            <td>
+          Ammo:<br>          
+                <input type="radio" name="p2Ammo" value="ArmorPiercing">Armor Piercing
+                <input type="radio" name="p2Ammo" value="Normal">Normal
+                <input type="radio" name="p2Ammo" value="LightPiercing">Light Piercing
+            </td>
+          </tr>
+        </table>
+    </div>
 </body>
 </html>
