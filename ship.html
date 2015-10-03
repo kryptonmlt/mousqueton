@@ -1,0 +1,114 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>Phaser - Making your first game, part 9</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+
+    game.load.image('sky', 'assets/sky.png');
+    game.load.image('ground', 'assets/platform.png');
+    game.load.image('star', 'assets/star.png');
+    game.load.image('ship', 'assets/ship2.png', 32, 48);
+
+}
+
+var player;
+var platforms;
+var cursors;
+
+var stars;
+var score = 0;
+var scoreText;
+
+function create() {
+
+    //  We're going to be using physics, so enable the Arcade Physics system
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    //  A simple background for our game
+    game.add.sprite(0, 0, 'sky');
+
+    // The player and its settings
+    player = game.add.sprite(game.world.width/2, game.world.height/2, 'ship');
+
+    //  We need to enable physics on the player
+    game.physics.arcade.enable(player);
+
+    //  Player physics properties. Give the little guy a slight bounce.
+    player.body.collideWorldBounds = true;
+    player.anchor.setTo(0.5, 0.5);
+    player.body.drag = 30;
+    player.body.angularDrag = 40;
+    player.body.maxAngular = 30;
+    player.body.maxVelocity = 50;
+    //var speed = 0;
+
+    //  Finally some stars to collect
+    stars = game.add.group();
+
+    //  We will enable physics for any star that is created in this group
+    stars.enableBody = true;
+
+    //  Here we'll create 12 of them evenly spaced apart
+    for (var i = 0; i < 12; i++)
+    {
+        //  Create a star inside of the 'stars' group
+        var star = stars.create(i * 70, 0, 'star');
+
+        //  Let gravity do its thing
+        star.body.gravity.y = 300;
+
+        //  This just gives each star a slightly random bounce value
+        star.body.bounce.y = 0.7 + Math.random() * 0.2;
+    }
+
+    //  The score
+    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+
+    //  Our controls.
+    cursors = game.input.keyboard.createCursorKeys();
+    game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+    
+}
+
+function update() {
+
+    //  Reset the players velocity (movement)
+    player.body.acceleration = 0;
+    player.body.angularAcceleration = 0;
+
+    if (cursors.left.isDown)
+    {
+        //  Move to the left
+        player.body.angularAcceleration = -30;
+    }
+    else if (cursors.right.isDown)
+    {
+        //  Move to the right
+        player.body.angularAcceleration = 30;
+    }
+    
+    //  Allow the player to jump if they are touching the ground.
+    if (cursors.up.isDown)
+    {
+        game.physics.arcade.accelerationFromRotation(player.rotation, 50, player.body.acceleration);
+    }
+    
+}
+</script>
+
+</body>
+</html>
