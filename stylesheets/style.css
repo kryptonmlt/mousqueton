@@ -3,6 +3,17 @@
     src: url("../fonts/emulogic.ttf") format("truetype");
 }
 
+a:link, 
+a:visited
+{
+    color: #f7f44c;
+}
+
+a:hover
+{
+    color: orange;
+}
+
 body {
 	margin: 0;
 	background: #25a4c4;
@@ -19,4 +30,9 @@ body {
 .display
 {
     margin: 0 auto;
+}
+
+ul, ol, li
+{
+    list-style-type: none;
 }

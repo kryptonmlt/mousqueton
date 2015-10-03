@@ -40,5 +40,3 @@ function pickFromAvailableTeams()
     showShips();
     console.log("Teams: " + assignedTeams);
 }
-
-startGame();
