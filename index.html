@@ -115,8 +115,8 @@ function create() {
     var rockYInc = game.world.height/rocksInfo.length;
         console.log("world size:" +game.world.width+", "+game.world.height);
     for(i=0;i<rocksInfo.length;i++){
-        var rockX = randomBetween(rockXInc*i,rockXInc*i+rockXInc);
-        var rockY = randomBetween(rockYInc*i,rockYInc*i+rockYInc);
+        var rockX = randomBetween(rockXInc*i, rockXInc*i+rockXInc);
+        var rockY = randomBetween(rockYInc*i, rockYInc*i+rockYInc);
         console.log("Rock cords:" +rockX+", "+rockY);
         rocks.create(rockX, rockY, rocksInfo[i]);
     }
