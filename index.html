@@ -79,6 +79,7 @@ var player;
 var currentSpeed = 0;
 var cursors;
 var SMALL_SHIP_SCALE = 0.05;
+var ROCKS_SCALE = 0.2;
 
 var shots;
 var shot;
@@ -107,7 +108,7 @@ function create() {
     player = team1.create(game.world.width/3, game.world.height/3, 'ship');
     //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/player.width;
     //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
-    //team1.scale.setTo(playerScaleX, playerScaleY);
+    //player.scale.setTo(playerScaleX, playerScaleY);
 
     rocks = game.add.group();
     rocks.enableBody = true;
@@ -118,7 +119,10 @@ function create() {
         var rockX = randomBetween(rockXInc*i, rockXInc*i+rockXInc);
         var rockY = randomBetween(rockYInc*i, rockYInc*i+rockYInc);
         console.log("Rock cords:" +rockX+", "+rockY);
-        rocks.create(rockX, rockY, rocksInfo[i]);
+        var tempRock = rocks.create(rockX, rockY, rocksInfo[i]);
+        var rocksScaleX = (ROCKS_SCALE*game.camera.width)/tempRock.width;
+        var rocksScaleY = (ROCKS_SCALE*game.camera.height)/tempRock.height;
+        tempRock.scale.setTo(rocksScaleX, rocksScaleY);
     }
 
     //  Player physics properties. Give the little guy a slight bounce.
