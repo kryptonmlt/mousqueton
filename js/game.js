@@ -8,9 +8,9 @@ var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * g
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
-    ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
-    ships[2] = new Ship(2, shipType.BIG, new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
-    ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
+    ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, true, 0, 1000, 50);
+    ships[2] = new Ship(2, shipType.BIG, new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 1, 1000, 50);
+    ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, true, 1, 1000, 50);
 }
 
 function generateRocks(){
@@ -60,6 +60,8 @@ var gameShips = [];
 var gameRocks = [];
 var player1;
 var player2;
+var player3;
+var player4;
 var currentSpeed = 0;
 var cursors;
 var SMALL_SHIP_SCALE = 0.05;
@@ -110,6 +112,8 @@ function create() {
         if(i >= 2){
             tempShip.angle+=180;
         }
+        tempShip.currentSpeed = 0;
+        tempShip.angularFacing = 0;
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
         tempShip.body.drag.set(10);
@@ -118,13 +122,16 @@ function create() {
         tempShip.body.maxVelocity = 30;
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
+
+        gameShips[i]=tempShip;
         if(ships[i].human){
             switch(humanPlayers){
-                case 0 : player1 = tempShip; humanPlayers++; break;
-                case 1 : player2 = tempShip; humanPlayers++; break;
+                case 0 : player1 = gameShips[i]; humanPlayers++; break;
+                case 1 : player2 = gameShips[i]; humanPlayers++; break;
+                case 2 : player3 = gameShips[i]; humanPlayers++; break;
+                case 3 : player4 = gameShips[i]; humanPlayers++; break;
             }
         }
-        gameShips[i]=tempShip;
         //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
         //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
         //tempShip.scale.setTo(playerScaleX, playerScaleY);
@@ -182,58 +189,111 @@ function update() {
     
     var speedChange = 0.5;
     
-    if (cursors.up.isDown)
-    {
-        currentSpeed += speedChange;
+    //Player 1 Controls
+    
+    if (cursors.up.isDown)  {
+        player1.currentSpeed += speedChange;}
+    else if (player1.currentSpeed > 0){
+           player1.currentSpeed -= speedChange;}
+
+    if (cursors.left.isDown){
+        player1.angularFacing -= 0.5;}
+    else if (cursors.right.isDown){
+        player1.angularFacing += 0.5;}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.)){
+        fireLeft(player1);}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.X)){
+        fireRight(player1);}
+    
+    //Player 2 Controls
+    
+    if (player2){
+       if (game.input.keyboard.isDown(Phaser.Keyboard.W))  {
+        player2.currentSpeed += speedChange;}
+    else if (player2.currentSpeed > 0){
+           player2.currentSpeed -= speedChange;}
+
+    if (game.input.keyboard.isDown(Phaser.Keyboard.A)){
+        player2.angularFacing -= 0.5;}
+    else if (game.input.keyboard.isDown(Phaser.Keyboard.D)){
+        player2.angularFacing += 0.5;}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.Q)){
+        fireLeft(player2);}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.E)){
+        fireRight(player2);} 
     }
-    else
-    {
-        if (currentSpeed > 0)
+    
+    //Player 3 Controls
+    
+    if (player3){
+        if (game.input.keyboard.isDown(Phaser.Keyboard.I))  {
+        player3.currentSpeed += speedChange;}
+    else if (player3.currentSpeed > 0){
+           player3.currentSpeed -= speedChange;}
+
+    if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
+        player3.angularFacing -= 0.5;}
+    else if (game.input.keyboard.isDown(Phaser.Keyboard.L)){
+        player3.angularFacing += 0.5;}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.U)){
+        fireLeft(player3);}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.O)){
+        fireRight(player3);}
+    }
+    
+    //Player 4 Controls
+    
+    if (player4){
+       if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8))  {
+        player4.currentSpeed += speedChange;}
+    else if (player4.currentSpeed > 0){
+           player4.currentSpeed -= speedChange;}
+
+    if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_4)){
+        player4.angularFacing -= 0.5;}
+    else if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_6)){
+        player4.angularFacing += 0.5;}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_7)){
+        fireLeft(player4);}
+    
+    if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_9)){
+        fireRight(player4);} 
+    }
+    
+    for (var i in gameShips){
+        ship = gameShips[i];
+        if (ship.angularFacing >= 15)
         {
-           currentSpeed -= speedChange;
+            ship.rotation += Math.PI/12;
+            //ghost.rotation += Math.PI/12;
+            ship.angularFacing -= 15;
+        }
+    
+        if (ship.angularFacing <= -15)
+        {
+            ship.rotation -= Math.PI/12;
+            //ghost.rotation -= Math.PI/12;
+            ship.angularFacing += 15;
         }
     }
-
-    if (cursors.left.isDown)
-    {
-        angularFacing -= 0.5;
-    }
-    else if (cursors.right.isDown)
-    {
-        angularFacing += 0.5;
-    }
-    
-    if (game.input.keyboard.isDown(Phaser.Keyboard.Z))
-    {
-        fireLeft(player1);
-    }
-    
-    if (game.input.keyboard.isDown(Phaser.Keyboard.X))
-    {
-        fireRight(player1);
-    }
-    
-    if (angularFacing >= 15)
-    {
-        player1.rotation += Math.PI/12;
-        //ghost.rotation += Math.PI/12;
-        angularFacing -= 15;
-    }
-    
-    if (angularFacing <= -15)
-    {
-        player1.rotation -= Math.PI/12;
-        //ghost.rotation -= Math.PI/12;
-        angularFacing += 15;
-    }
-    
     //if (game.time.now >= movementCycle){
-    //    player1.position.set(ghost.position);
-    //    movementCycle = game.time.now + 2000;
+        //player1.position.set(ghost.position);
+        //movementCycle = game.time.now + 2000;
     //}
     
-    game.physics.arcade.velocityFromRotation(player1.rotation, currentSpeed, player1.body.velocity);
-
+    //game.physics.arcade.velocityFromRotation(ghost.rotation, currentSpeed, ghost.body.velocity);
+    for (var i in gameShips){
+        ship = gameShips[i];
+        game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
+    }
+   
     // COLLISION CHECKS
 
     // Ships && Rocks
@@ -348,4 +408,7 @@ function Ship(id, shipType, weapon, specialPower, human, teamId, health, acceler
   this.teamId = teamId;
   this.health = health;
   this.acceleration = acceleration;
+  
+  this.currentSpeed = 0;
+  this.angularFacing = 0;
 }
