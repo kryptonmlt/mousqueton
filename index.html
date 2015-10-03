@@ -188,10 +188,55 @@ function fireLeft () {
             shotTimeLeft = game.time.now + 500;
         }
     }
-    }
+}
     
 function shipHit (shot, ship) { 
     shot.kill();
+}
+
+var ship_type = {
+    SMALL: 0, // fastest but weakest
+    MEDIUM: 1,
+    BIG: 2 // strongest but slowest
+};
+
+var specialPower = {
+    ACCEL: 0, // increases acceleration
+    DAMAGE: 1, // increases damage output
+    STEALTH: 2 //goes invisible
+};
+
+var projectileType = {
+    perpendicular: 0 // bullets shoot perpendicular to the ship
+};
+
+var weaponType = {
+    sniper: 0, //slowest - high damage
+    barrage, //fires a barrage of bombs - longest to reload - medium damage
+    brigade // fastest firing - low damage
+};
+
+function Projectile(projectileType, projectileSpeed, damage){
+    this.projectileType - projectileType;
+    this.projectileSpeed = projectileSpeed;
+    this.damage = damage;
+}
+
+function weapon(weaponType, projectile, reloadTime){
+    this.weaponType = weaponType;
+    this.projectile = projectile;
+    this.reloadTime = reloadTime;
+}
+
+function Ship(id, ship_type, weapon, specialPower, human, team_id, health, acceleration) {
+  this.id = id;
+  this.ship_type = ship_type;
+  this.weapon = weapon;
+  this.specialPower = specialPower;
+  this.human = human;
+  this.team_id = team_id;
+  this.health = health;
+  this.acceleration = acceleration;
 }
 
 </script>
