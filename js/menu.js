@@ -42,7 +42,7 @@ function pickFromAvailableTeams()
 }
 
 
-var game = new Phaser.Game(600, 400, Phaser.AUTO, 'menu', { preload: menuPreload, create: menuCreate, update: menuUpdate });
+var game = new Phaser.Game(600, 450, Phaser.AUTO, 'menu', { preload: menuPreload, create: menuCreate, update: menuUpdate });
 
 function menuPreload() {
     console.log("preload");
@@ -51,7 +51,7 @@ function menuPreload() {
 
 function menuCreate() {
     console.log("create");
-    generateSea();
+    addBackground('sea');
     
     text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
     text.anchor.setTo(0.5, 0.5);

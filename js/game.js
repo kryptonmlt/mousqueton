@@ -84,9 +84,9 @@ var angularFacing = 0;
 var explosions;
 //var movementCycle = 0;
 
-function generateSea() {
+function addBackground(assetName) {
     
-    var sea = game.add.sprite(0, 0, 'sea');
+    var sea = game.add.sprite(0, 0, assetName);
     var seaScaleX = (game.camera.width - sea.width)/sea.width;
     var seaScaleY = (game.camera.height - sea.height)/sea.height;
     sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
@@ -109,7 +109,7 @@ function create() {
     }
 
     // SEA Generation
-    generateSea()
+    addBackground('sea');
 
     // SHIP Generation
     var humanPlayers=0;
