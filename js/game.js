@@ -70,6 +70,9 @@ var shotTimeRight = 0;
 var shotAngle = 0;
 var rocks;
 
+var angularFacing = 0;
+var movementCycle = 0;
+
 function create() {
 
     // Game Physics
@@ -111,7 +114,7 @@ function create() {
                 case 1 : player2 = tempShip; humanPlayers++; break;
             }
         }
-
+        
         //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
         //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
         //tempShip.scale.setTo(playerScaleX, playerScaleY);
@@ -166,31 +169,28 @@ function randomBetween(min, max){
 function update() {
     
     var speedChange = 0.5;
-    var angularVelocityChange = 30;
     
     if (cursors.up.isDown)
     {
+        //game.physics.arcade.velocityFromRotation(ghost.rotation, 30, ghost.body.acceleration);
         currentSpeed += speedChange;
     }
     else
     {
         if (currentSpeed > 0)
         {
+            //ghost.body.velocity.set(0);
            currentSpeed -= speedChange;
         }
     }
 
     if (cursors.left.isDown)
     {
-        player1.body.angularVelocity = -1 * angularVelocityChange;
+        angularFacing -= 0.5;
     }
     else if (cursors.right.isDown)
     {
-        player1.body.angularVelocity = angularVelocityChange;
-    }
-    else
-    {
-        player1.body.angularVelocity = 0;
+        angularFacing += 5;
     }
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.Z))
@@ -201,6 +201,25 @@ function update() {
     if (game.input.keyboard.isDown(Phaser.Keyboard.X))
     {
         fireRight();
+    }
+    
+    if (angularFacing >= 15)
+    {
+        player1.rotation += Math.PI/12;
+        //ghost.rotation += Math.PI/12;
+        angularFacing -= 15;
+    }
+    
+    if (angularFacing <= -15)
+    {
+        player1.rotation -= Math.PI/12;
+        //ghost.rotation -= Math.PI/12;
+        angularFacing += 15;
+    }
+    
+    if (game.time.now >= movementCycle){
+        player1.position.set(ghost.position);
+        movementCycle = game.time.now + 2000;
     }
     
     game.physics.arcade.velocityFromRotation(player1.rotation, currentSpeed, player1.body.velocity);
