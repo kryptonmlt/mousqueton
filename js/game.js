@@ -7,10 +7,17 @@ $(window).resize(function() { window.resizeGame(); } );
 var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function populateShipsRandomly(){
+<<<<<<< HEAD
     ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
     ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, true, 0, 1000, 50);
     ships[2] = new Ship(2, shipType.BIG, new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 1, 1000, 50);
     ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, true, 1, 1000, 50);
+=======
+    ships[0] = new Ship(0, shipType.SMALL,  new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
+    ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
+    ships[2] = new Ship(2, shipType.BIG,    new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
+    ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
+>>>>>>> 8cf3bc2427220062c4c09ca8c94dd90958eb9ef1
 }
 
 function generateRocks(){
@@ -365,6 +372,7 @@ function rockHit (rock, shot) {
     shot.kill();
 }
 
+<<<<<<< HEAD
 var shipType = {
     SMALL: 0, // fastest but weakest
     MEDIUM: 1,
@@ -412,3 +420,5 @@ function Ship(id, shipType, weapon, specialPower, human, teamId, health, acceler
   this.currentSpeed = 0;
   this.angularFacing = 0;
 }
+=======
+>>>>>>> 8cf3bc2427220062c4c09ca8c94dd90958eb9ef1
