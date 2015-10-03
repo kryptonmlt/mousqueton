@@ -4,7 +4,10 @@ var rocksInfo = [];
 var gameScale = 0.75
 
 $(window).resize(function() { window.resizeGame(); } );
-var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function startGame(){
+    game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+}
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
@@ -77,16 +80,21 @@ var rocks;
 var angularFacing = 0;
 var movementCycle = 0;
 
+function generateSea() {
+    
+    var sea = game.add.sprite(0, 0, 'sea');
+    var seaScaleX = (game.camera.width - sea.width)/sea.width;
+    var seaScaleY = (game.camera.height - sea.height)/sea.height;
+    sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
+}
+
 function create() {
 
     // Game Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     // SEA Generation
-    var sea = game.add.sprite(0, 0, 'sea');
-	var seaScaleX = (game.camera.width - sea.width)/sea.width;
-	var seaScaleY = (game.camera.height - sea.height)/sea.height;
-	sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
+    generateSea()
 
     // SHIP Generation
     var humanPlayers=0;
