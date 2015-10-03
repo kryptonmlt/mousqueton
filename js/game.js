@@ -2,7 +2,7 @@ var ships = [];
 var rocksInfo = [];
 
 $(window).resize(function() { window.resizeGame(); } );
-var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game($(window).width() * 0.75, $(window).height() * 0.75, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
