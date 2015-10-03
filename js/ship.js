@@ -1,6 +1,6 @@
 
 
-var shipType = {
+var hull = {
     SMALL: 0, // fastest but weakest
     MEDIUM: 1,
     BIG: 2 // strongest but slowest
@@ -12,12 +12,12 @@ var specialPower = {
     STEALTH: 2 //goes invisible
 };
 
-function Ship(id, shipType, weapon, specialPower, human, teamId, health, acceleration) {
+function Ship(id, hull, weapon, specialPower, isHuman, teamId, health, acceleration) {
   this.id = id;
-  this.shipType = shipType;
+  this.hull = hull;
   this.weapon = weapon;
   this.specialPower = specialPower;
-  this.human = human;
+  this.isHuman = isHuman;
   this.teamId = teamId;
   this.health = health;
   this.acceleration = acceleration;

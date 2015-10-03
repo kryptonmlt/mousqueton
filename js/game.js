@@ -8,6 +8,7 @@ var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * g
 
 function populateShipsRandomly(){
 <<<<<<< HEAD
+<<<<<<< HEAD
     ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
     ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, true, 0, 1000, 50);
     ships[2] = new Ship(2, shipType.BIG, new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 1, 1000, 50);
@@ -18,6 +19,12 @@ function populateShipsRandomly(){
     ships[2] = new Ship(2, shipType.BIG,    new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
     ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
 >>>>>>> 8cf3bc2427220062c4c09ca8c94dd90958eb9ef1
+=======
+    ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
+    ships[1] = new Ship(1, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
+    ships[2] = new Ship(2, hull.BIG,    new Weapon(gun.BRIGADE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
+    ships[3] = new Ship(3, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
+>>>>>>> d56f1ac9c613fe0e49f10e503973a95766d5f949
 }
 
 function generateRocks(){
@@ -115,7 +122,7 @@ function create() {
             shipY = game.world.height*(i%2);            
         }
         console.log("Ship cords:" +shipX+", "+shipY);
-        tempShip = teams[ships[i].teamId].create( shipX, shipY, getShipFromType(ships[i].shipType));
+        tempShip = teams[ships[i].teamId].create( shipX, shipY, getShipFromType(ships[i].hull));
         if(i >= 2){
             tempShip.angle+=180;
         }
@@ -179,8 +186,8 @@ function create() {
     
 }
 
-function getShipFromType(shipType){
-    switch(shipType){
+function getShipFromType(hull){
+    switch(hull){
         case 0: return "ship0";
         case 1: return "ship1";
         case 2: return "ship2";

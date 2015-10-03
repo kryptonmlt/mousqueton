@@ -1,11 +1,11 @@
 
 
-var projectileType = {
+var Direction = {
     PERPENDICULAR: 0 // bullets shoot perpendicular to the ship
 };
 
-function Projectile(projectileType, projectileSpeed, damage){
-    this.projectileType - projectileType;
-    this.projectileSpeed = projectileSpeed;
+function Projectile(direction, speed, damage){
+    this.direction = direction;
+    this.speed = speed;
     this.damage = damage;
 }
