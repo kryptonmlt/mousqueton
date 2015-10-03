@@ -7,11 +7,13 @@ a:link,
 a:visited
 {
     color: #f7f44c;
+    text-decoration: none;
 }
 
 a:hover
 {
     color: orange;
+    text-decoration: underline;
 }
 
 body {
