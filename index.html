@@ -45,6 +45,8 @@ function preload() {
 
 }
 
+var team1;
+var team2;
 var player;
 var currentSpeed = 0;
 var cursors;
@@ -68,21 +70,32 @@ function create() {
 	sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
 
     // The player and its settings
-    player = game.add.sprite(game.world.width/2, game.world.height/2, 'ship');
+    team1 = game.add.group();
+    team2 = game.add.group();
+    team1.enableBody = true;
+    team2.enableBody = true;
+    badGuy = team2.create(game.world.width/1.5, game.world.height/1.5, 'ship');
+    player = team1.create(game.world.width/3, game.world.height/3, 'ship');
 	var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/player.width;
 	var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
 	player.scale.setTo(playerScaleX, playerScaleY);
 
-    //  We need to enable physics on the player
-    game.physics.arcade.enable(player);
 
     //  Player physics properties. Give the little guy a slight bounce.
+
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
     player.body.drag.set(10);
     player.body.angularDrag = 40;
     player.body.maxAngular = 30;
     player.body.maxVelocity = 30;
+    
+    badGuy.body.collideWorldBounds = true;
+    badGuy.anchor.setTo(0.5, 0.5);
+    badGuy.body.drag.set(10);
+    badGuy.body.angularDrag = 40;
+    badGuy.body.maxAngular = 30;
+    badGuy.body.maxVelocity = 30;
 
     shots = game.add.group();
     shots.enableBody = true;
@@ -100,7 +113,7 @@ function create() {
 }
 
 function update() {
-
+    
     if (cursors.up.isDown)
     {
         currentSpeed += 0.5;
@@ -137,8 +150,8 @@ function update() {
     }
     
     game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity);
-    
-    
+    game.physics.arcade.collide(team1, team2);
+    game.physics.arcade.overlap(shots, team2, shipHit, null, this);
       
 }
 
@@ -175,9 +188,13 @@ function fireLeft () {
             shotTimeLeft = game.time.now + 500;
         }
     }
-
+    }
+    
+function shipHit (shot, ship) { 
+    shot.kill();
 }
 
+<<<<<<< HEAD
 function Projectile(projectileTypeId, projectileSpeed, power){
     this.projectileTypeId - projectileTypeId;
     this.projectileSpeed = projectileSpeed;
@@ -199,6 +216,8 @@ function Ship(id, shipTypeId, weapon, specialPower, human, team_id, health, acce
   this.health = health;
   this.acceleration = acceleration;
 }
+=======
+>>>>>>> 1632ba4ce27f05f36fb5d486e9e5392c89a73c72
 </script>
 </body>
 </html>
