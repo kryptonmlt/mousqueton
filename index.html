@@ -30,12 +30,19 @@ function preload() {
 
     game.load.image('sea', 'assets/water0.png');
     game.load.image('ship', 'assets/ship2.png');
+    game.load.image('shot', 'assets/shot.png');
 
 }
 
 var player;
+var currentSpeed = 0;
 var cursors;
-var speed_increase;
+
+var shots;
+var shot;
+var shotTimeLeft = 0;
+var shotTimeRight = 0;
+var shotAngle = 0;
 
 function create() {
 
@@ -54,11 +61,20 @@ function create() {
     //  Player physics properties. Give the little guy a slight bounce.
     player.body.collideWorldBounds = true;
     player.anchor.setTo(0.5, 0.5);
-    player.body.drag.set(20);
+    player.body.drag.set(10);
     player.body.angularDrag = 40;
     player.body.maxAngular = 30;
-    player.body.maxVelocity = 50;
+    player.body.maxVelocity = 30;
 
+    shots = game.add.group();
+    shots.enableBody = true;
+    shots.physicsBodyType = Phaser.Physics.ARCADE;
+    
+        //  All 40 of them
+    shots.createMultiple(40, 'shot');
+    shots.setAll('anchor.x', 0.5);
+    shots.setAll('anchor.y', 0.5);
+    
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
@@ -69,11 +85,14 @@ function update() {
 
     if (cursors.up.isDown)
     {
-        game.physics.arcade.velocityFromAngle(player.angle, 30, player.body.velocity);
+        currentSpeed += 0.5;
     }
     else
     {
-        player.body.acceleration.set(0);
+        if (currentSpeed > 0)
+        {
+            currentSpeed -= 0.5;
+        }
     }
 
     if (cursors.left.isDown)
@@ -89,11 +108,56 @@ function update() {
         player.body.angularVelocity = 0;
     }
     
-    if (cursors.down.isDown)
+    if (game.input.keyboard.isDown(Phaser.Keyboard.Z))
     {
-        game.physics.arcade.accelerationFromRotation(player.rotation, -50, player.body.acceleration);
+        fireLeft();
     }
     
+    if (game.input.keyboard.isDown(Phaser.Keyboard.X))
+    {
+        fireRight();
+    }
+    
+    game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity);
+    
+    
+      
+}
+
+function fireRight () {
+
+    if (game.time.now > shotTimeRight)
+    {
+        shot = shots.getFirstExists(false);
+
+        if (shot)
+        {
+            shot.reset(player.body.x + player.body.halfWidth, player.body.y + player.body.halfHeight);
+            shot.lifespan = 2000;
+            shot.rotation = player.rotation;
+            game.physics.arcade.velocityFromRotation((player.rotation + 1.57), 400, shot.body.velocity);
+            shotTimeRight = game.time.now + 500;
+        }
+    }
+
+}
+
+function fireLeft () {
+
+    if (game.time.now > shotTimeLeft)
+    {
+        shot = shots.getFirstExists(false);
+
+        if (shot)
+        {
+            shot.reset(player.body.x + player.body.halfWidth, player.body.y + player.body.halfHeight);
+            shot.lifespan = 2000;
+            shot.rotation = player.rotation;
+            game.physics.arcade.velocityFromRotation((player.rotation - 1.57), 400, shot.body.velocity);
+            shotTimeLeft = game.time.now + 500;
+        }
+    }
+
 }
 </script>
 
