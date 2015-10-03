@@ -20,28 +20,40 @@
 
 <script type="text/javascript">
 
+var ships = [];
+
 $(window).resize(function() { window.resizeGame(); } );
 var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
+function populateShipsRandomly(){
+    ships[0] = new Ship(0, shipType.SMALL, new Weapon(weaponType.SNIPER, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
+    ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
+    ships[2] = new Ship(2, shipType.BIG, new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
+    ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
+}
+
 function resizeGame() {
-                var height = $(window).height();
-                var width = $(window).width();
-                console.log("Setting screen size to: ("+width+","+height+")");
-                    
-                game.width = width;
-                game.height = height;
-                game.stage.bounds.width = width;
-                game.stage.bounds.height = height;
-                    
-                if (game.renderType === Phaser.WEBGL){
-                    game.renderer.resize(width, height);
-                }
-            }
+    var height = $(window).height();
+    var width = $(window).width();
+    console.log("Setting screen size to: ("+width+","+height+")");
+        
+    game.width = width;
+    game.height = height;
+    game.stage.bounds.width = width;
+    game.stage.bounds.height = height;
+        
+    if (game.renderType === Phaser.WEBGL){
+        game.renderer.resize(width, height);
+    }
+}
+
 function preload() {
 
     game.load.image('sea', 'assets/water0.png');
     game.load.image('ship', 'assets/ship2.png');
     game.load.image('shot', 'assets/shot.png');
+
+    populateShipsRandomly();
 
 }
 
@@ -194,7 +206,7 @@ function shipHit (shot, ship) {
     shot.kill();
 }
 
-var ship_type = {
+var shipType = {
     SMALL: 0, // fastest but weakest
     MEDIUM: 1,
     BIG: 2 // strongest but slowest
@@ -207,13 +219,13 @@ var specialPower = {
 };
 
 var projectileType = {
-    perpendicular: 0 // bullets shoot perpendicular to the ship
+    PERPENDICULAR: 0 // bullets shoot perpendicular to the ship
 };
 
 var weaponType = {
-    sniper: 0, //slowest - high damage
-    barrage, //fires a barrage of bombs - longest to reload - medium damage
-    brigade // fastest firing - low damage
+    SNIPER: 0, //slowest - high damage
+    BARRAGE: 1, //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: 2 // fastest firing - low damage
 };
 
 function Projectile(projectileType, projectileSpeed, damage){
@@ -222,15 +234,15 @@ function Projectile(projectileType, projectileSpeed, damage){
     this.damage = damage;
 }
 
-function weapon(weaponType, projectile, reloadTime){
+function Weapon(weaponType, projectile, reloadTime){
     this.weaponType = weaponType;
     this.projectile = projectile;
     this.reloadTime = reloadTime;
 }
 
-function Ship(id, ship_type, weapon, specialPower, human, team_id, health, acceleration) {
+function Ship(id, shipType, weapon, specialPower, human, team_id, health, acceleration) {
   this.id = id;
-  this.ship_type = ship_type;
+  this.shipType = shipType;
   this.weapon = weapon;
   this.specialPower = specialPower;
   this.human = human;
