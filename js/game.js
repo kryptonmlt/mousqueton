@@ -23,8 +23,8 @@ function generateRocks(){
 }
 
 function resizeGame() {
-    var height = $(window).height();
-    var width = $(window).width();
+    var height = $(window).height() * 0.75;
+    var width = $(window).width() * 0.75;
     console.log("Setting screen size to: ("+width+","+height+")");
         
     game.width = width;
