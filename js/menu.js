@@ -2,5 +2,5 @@ var shipCount = 4;
 
 function showShips()
 {
-    alert("Using " + shipCount + " Ships");
+    console.log("Using " + shipCount + " Ships");
 }
