@@ -56,5 +56,5 @@ function create() {
 }
 
 function update() {
-    console.log("update");
+    //console.log("update");
 }
