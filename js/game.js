@@ -1,4 +1,3 @@
-
 var ships = [];
 var rocksInfo = [];
 
@@ -41,7 +40,9 @@ function resizeGame() {
 function preload() {
 
     game.load.image('sea', 'assets/water0.png');
-    game.load.image('ship', 'assets/ship2.png');
+    game.load.image('ship0', 'assets/ship0.png');
+    game.load.image('ship1', 'assets/ship1.png');
+    game.load.image('ship2', 'assets/ship2.png');
     game.load.image('shot', 'assets/shot.png');
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
@@ -52,9 +53,9 @@ function preload() {
     console.log("Generated "+rocksInfo.length+" rocks");
 }
 
-var team1;
-var team2;
-var player;
+var teams = [];
+var player1;
+var player2;
 var currentSpeed = 0;
 var cursors;
 var SMALL_SHIP_SCALE = 0.05;
@@ -69,32 +70,59 @@ var rocks;
 
 function create() {
 
-    //  We're going to be using physics, so enable the Arcade Physics system
+    // Game Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    //  A simple background for our game
+    // SEA Generation
     var sea = game.add.sprite(0, 0, 'sea');
 	var seaScaleX = (game.camera.width - sea.width)/sea.width;
 	var seaScaleY = (game.camera.height - sea.height)/sea.height;
 	sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
 
-    // The player and its settings
-    team1 = game.add.group();
-    team2 = game.add.group();
-    team1.enableBody = true;
-    team2.enableBody = true;
-    badGuy = team2.create(game.world.width/1.5, game.world.height/1.5, 'ship');
-    player = team1.create(game.world.width/3, game.world.height/3, 'ship');
-    //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/player.width;
-    //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
-    //player.scale.setTo(playerScaleX, playerScaleY);
+    // SHIP Generation
+    var humanPlayers=0;
+    var shipXInc = game.world.width/7;
+    var shipYInc = game.world.height/7;
+    for(i=0; i < ships.length; i++){
+        teams[ships[i].teamId] = game.add.group();
+        teams[ships[i].teamId].enableBody=true;
+        var shipX=0;
+        var shipY=0;
+        if(i < 2){            
+            shipX = shipXInc;
+            shipY = game.world.height*i- shipYInc;
+        }else{
+            shipX = game.world.width - shipXInc;
+            shipY = game.world.height*(i%2);            
+        }
+        console.log("Ship cords:" +shipX+", "+shipY);
+        tempShip = teams[ships[i].teamId].create( shipX, shipY, getShipFromType(ships[i].shipType));
+        tempShip.body.collideWorldBounds = true;
+        tempShip.anchor.setTo(0.5, 0.5);
+        tempShip.body.drag.set(10);
+        tempShip.body.angularDrag = 40;
+        tempShip.body.maxAngular = 30;
+        tempShip.body.maxVelocity = 30;
+        if(ships[i].human){
+            switch(humanPlayers){
+                case 0 : player1 = tempShip; humanPlayers++; break;
+                case 1 : player2 = tempShip; humanPlayers++; break;
+            }
+        }
 
+        //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
+        //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
+        //tempShip.scale.setTo(playerScaleX, playerScaleY);
+
+    }
+
+    // ROCK Generation
     rocks = game.add.group();
     rocks.enableBody = true;
     var rockXInc = game.world.width/rocksInfo.length;
     var rockYInc = game.world.height/rocksInfo.length;
         console.log("world size:" +game.world.width+", "+game.world.height);
-    for(i=0;i<rocksInfo.length;i++){
+    for(i=0; i < rocksInfo.length; i++){
         var rockX = randomBetween(rockXInc*i, rockXInc*i+rockXInc);
         var rockY = randomBetween(rockYInc*i, rockYInc*i+rockYInc);
         console.log("Rock cords:" +rockX+", "+rockY);
@@ -104,26 +132,12 @@ function create() {
         tempRock.scale.setTo(rocksScaleX, rocksScaleY);
     }
 
-    //  Player physics properties. Give the little guy a slight bounce.
-    player.body.collideWorldBounds = true;
-    player.anchor.setTo(0.5, 0.5);
-    player.body.drag.set(10);
-    player.body.angularDrag = 40;
-    player.body.maxAngular = 30;
-    player.body.maxVelocity = 30;
-    
-    badGuy.body.collideWorldBounds = true;
-    badGuy.anchor.setTo(0.5, 0.5);
-    badGuy.body.drag.set(10);
-    badGuy.body.angularDrag = 40;
-    badGuy.body.maxAngular = 30;
-    badGuy.body.maxVelocity = 30;
-
+    // SHOT Generation
     shots = game.add.group();
     shots.enableBody = true;
     shots.physicsBodyType = Phaser.Physics.ARCADE;
     
-        //  All 40 of them
+    //  All 40 of them
     shots.createMultiple(40, 'shot');
     shots.setAll('anchor.x', 0.5);
     shots.setAll('anchor.y', 0.5);
@@ -132,6 +146,15 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
+}
+
+function getShipFromType(shipType){
+    switch(shipType){
+        case 0: return "ship0";
+        case 1: return "ship1";
+        case 2: return "ship2";
+    }
+    return "ship3";
 }
 
 function randomBetween(min, max){
@@ -154,15 +177,15 @@ function update() {
 
     if (cursors.left.isDown)
     {
-        player.body.angularVelocity = -30;
+        player1.body.angularVelocity = -30;
     }
     else if (cursors.right.isDown)
     {
-        player.body.angularVelocity = 30;
+        player1.body.angularVelocity = 30;
     }
     else
     {
-        player.body.angularVelocity = 0;
+        player1.body.angularVelocity = 0;
     }
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.Z))
@@ -175,9 +198,17 @@ function update() {
         fireRight();
     }
     
-    game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity);
-    game.physics.arcade.collide(team1, team2);
-    game.physics.arcade.overlap(shots, team2, shipHit, null, this);
+    game.physics.arcade.velocityFromRotation(player1.rotation, currentSpeed, player1.body.velocity);
+
+    //collision between teams and shots
+    for(i=0; i < teams.length; i++){
+        for(j=0; j < teams.length; j++){
+            if(i != j && j > i){
+                game.physics.arcade.collide(teams[i], teams[j]);                
+            }
+        }
+        game.physics.arcade.overlap(shots, teams[i], shipHit, null, this);
+    }
       
 }
 
@@ -189,10 +220,10 @@ function fireRight () {
 
         if (shot)
         {
-            shot.reset(player.body.x + player.body.halfWidth, player.body.y + player.body.halfHeight);
+            shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
             shot.lifespan = 2000;
-            shot.rotation = player.rotation;
-            game.physics.arcade.velocityFromRotation((player.rotation + 1.57), 400, shot.body.velocity);
+            shot.rotation = player1.rotation;
+            game.physics.arcade.velocityFromRotation((player1.rotation + 1.57), 400, shot.body.velocity);
             shotTimeRight = game.time.now + 500;
         }
     }
@@ -207,10 +238,10 @@ function fireLeft () {
 
         if (shot)
         {
-            shot.reset(player.body.x + player.body.halfWidth, player.body.y + player.body.halfHeight);
+            shot.reset(player1.body.x + player1.body.halfWidth, player1.body.y + player1.body.halfHeight);
             shot.lifespan = 2000;
-            shot.rotation = player.rotation;
-            game.physics.arcade.velocityFromRotation((player.rotation - 1.57), 400, shot.body.velocity);
+            shot.rotation = player1.rotation;
+            game.physics.arcade.velocityFromRotation((player1.rotation - 1.57), 400, shot.body.velocity);
             shotTimeLeft = game.time.now + 500;
         }
     }
@@ -254,13 +285,13 @@ function Weapon(weaponType, projectile, reloadTime){
     this.reloadTime = reloadTime;
 }
 
-function Ship(id, shipType, weapon, specialPower, human, team_id, health, acceleration) {
+function Ship(id, shipType, weapon, specialPower, human, teamId, health, acceleration) {
   this.id = id;
   this.shipType = shipType;
   this.weapon = weapon;
   this.specialPower = specialPower;
   this.human = human;
-  this.team_id = team_id;
+  this.teamId = teamId;
   this.health = health;
   this.acceleration = acceleration;
 }
