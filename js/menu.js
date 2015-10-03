@@ -52,6 +52,10 @@ function menuPreload() {
 function menuCreate() {
     console.log("create");
     generateSea();
+    
+    text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
+    text.anchor.setTo(0.5, 0.5);
+    
     startGame();
 }
 
