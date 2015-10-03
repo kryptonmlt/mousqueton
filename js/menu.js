@@ -4,5 +4,3 @@ function showShips()
 {
     alert("Using " + shipCount + " Ships");
 }
-
-showShips();
