@@ -2,7 +2,8 @@
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8" />
-    <title>Phaser - Making your first game, part 9</title>
+    <title>hi matey</title>
+    <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
 	<script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
         body {
@@ -11,12 +12,7 @@
             font-family: Arial;
             color: #f7f44c;
             text-align: center;
-        }
-        
-        canvas {
-            border: 10px solid;
-        }
-        
+        }        
         
     </style>
 </head>
@@ -24,8 +20,23 @@
 
 <script type="text/javascript">
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+$(window).resize(function() { window.resizeGame(); } );
+var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
+function resizeGame() {
+                var height = $(window).height();
+                var width = $(window).width();
+                console.log("Setting screen size to: ("+width+","+height+")");
+                    
+                game.width = width;
+                game.height = height;
+                game.stage.bounds.width = width;
+                game.stage.bounds.height = height;
+                    
+                if (game.renderType === Phaser.WEBGL){
+                    game.renderer.resize(width, height);
+                }
+            }
 function preload() {
 
     game.load.image('sea', 'assets/water0.png');
@@ -37,6 +48,7 @@ function preload() {
 var player;
 var currentSpeed = 0;
 var cursors;
+var SMALL_SHIP_SCALE = 0.05;
 
 var shots;
 var shot;
@@ -50,10 +62,16 @@ function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     //  A simple background for our game
-    game.add.sprite(0, 0, 'sea');
+    var sea = game.add.sprite(0, 0, 'sea');
+	var seaScaleX = (game.camera.width - sea.width)/sea.width;
+	var seaScaleY = (game.camera.height - sea.height)/sea.height;
+	sea.scale.setTo(1+seaScaleX, 1+seaScaleY);
 
     // The player and its settings
     player = game.add.sprite(game.world.width/2, game.world.height/2, 'ship');
+	var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/player.width;
+	var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
+	player.scale.setTo(playerScaleX, playerScaleY);
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -160,8 +178,5 @@ function fireLeft () {
 
 }
 </script>
-
-<h1>Coming Soon from Mousqueton Games - Shooty Shooty Ship Game</h1>
-
 </body>
 </html>
