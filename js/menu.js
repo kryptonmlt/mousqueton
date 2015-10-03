@@ -42,13 +42,16 @@ function pickFromAvailableTeams()
 }
 
 
-var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'menu', { preload: preload, create: create, update: update });
 
 function preload() {
+    console.log("preload")
 }
 
 function create() {
+    console.log("create")
 }
 
 function update() {
+    console.log("update")
 }

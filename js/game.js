@@ -4,7 +4,10 @@ var rocksInfo = [];
 var gameScale = 0.75
 
 $(window).resize(function() { window.resizeGame(); } );
-var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+
+function startGame(){
+    game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+}
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
