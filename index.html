@@ -21,6 +21,7 @@
 <script type="text/javascript">
 
 var ships = [];
+var rocks = [];
 
 $(window).resize(function() { window.resizeGame(); } );
 var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
@@ -30,6 +31,17 @@ function populateShipsRandomly(){
     ships[1] = new Ship(1, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
     ships[2] = new Ship(2, shipType.BIG, new Weapon(weaponType.BRIGADE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
     ships[3] = new Ship(3, shipType.MEDIUM, new Weapon(weaponType.BARRAGE, new Projectile(projectileType.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
+}
+
+function generateRocks(){
+    var rocksTotal = Math.floor((Math.random() * 4) + 2);
+    for(i=0; i < rocksTotal; i++){
+        switch(Math.floor(Math.random() * 2)){
+            case 0: rocks[i] = "rock0"; break;
+            case 1: rocks[i] = "rock1"; break;
+            case 2: rocks[i] = "rock2"; break;
+        }
+    }
 }
 
 function resizeGame() {
@@ -52,8 +64,12 @@ function preload() {
     game.load.image('sea', 'assets/water0.png');
     game.load.image('ship', 'assets/ship2.png');
     game.load.image('shot', 'assets/shot.png');
+    game.load.image('rock0', 'assets/rock0.png');
+    game.load.image('rock1', 'assets/rock1.png');
+    game.load.image('rock2', 'assets/rock2.png');
 
     populateShipsRandomly();
+    generateRocks();
 
 }
 
