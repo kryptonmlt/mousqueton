@@ -1,7 +1,10 @@
 var ships = [];
 var rocksInfo = [];
 
-var gameScale = 0.75
+var gameScale = 1;
+
+var gameWidth = 800;
+var gameHeight = 600;
 
 //Enums
 
@@ -34,14 +37,21 @@ var specialPower = {
 $(window).resize(function() { window.resizeGame(); } );
 
 function startGame(){
-    game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(gameWidth * gameScale, gameHeight * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 }
 
 function populateShipsRandomly(){
+<<<<<<< HEAD
     ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.NORMAL, specialPower.ACCEL, true, 0);
     ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.DAMAGE, true, 0);
     ships[2] = new Ship(2, HULL.BIG,    GUN.BRIGADE, PROJECTILE.NORMAL, specialPower.ACCEL, true, 1);
     ships[3] = new Ship(3, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.STEALTH, true, 1);
+=======
+    ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
+    ships[1] = new Ship(1, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
+    ships[2] = new Ship(2, hull.BIG,    new Weapon(gun.BRIGADE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
+    ships[3] = new Ship(3, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
+>>>>>>> bc33340f4527f94e6f5f84df8eda3a4dab77b966
 }
 
 function generateRocks(){
@@ -56,8 +66,8 @@ function generateRocks(){
 }
 
 function resizeGame() {
-    var height = $(window).height() * gameScale;
-    var width = $(window).width() * gameScale;
+    var height = gameHeight * gameScale;
+    var width = gameWidth * gameScale;
     console.log("Setting screen size to: ("+width+","+height+")");
         
     game.width = width;
@@ -100,6 +110,7 @@ var player4;
 var cursors;
 var SMALL_SHIP_SCALE = 0.05;
 var ROCKS_SCALE = 0.2;
+var speedChange = 0.5;
 
 var shots;
 var shot;
@@ -162,7 +173,15 @@ function create() {
         tempShip.body.maxVelocity = 30;
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
+<<<<<<< HEAD
         
+=======
+        tempShip.isHuman = ships[i].isHuman;
+        //Wake Generation
+       // wake = tempShip.addChild(game.add.emitter(tempShip.x, tempShip.y, 50));
+        //wake.makeParticles('diamond');
+        //wake.start(false,1000, 10);
+>>>>>>> bc33340f4527f94e6f5f84df8eda3a4dab77b966
 
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
@@ -398,8 +417,30 @@ function update() {
 
 function aI(){
     for(i=0; i<gameShips.length; i++){
-
+            if(!gameShips[i].isHuman){
+                var target;
+                for(j=0;j<gameShips.length;j++){
+                    if(gameShips[j].teamId != gameShips[i].teamId){ //ENEMY
+                        if(gameShips[j].health>0){ //ALIVE
+                            target = gameShips[j];
+                            break;
+                        }
+                    }
+                }
+                if(target){
+                    switch(inSight(gameShips[i],target)){
+                        case 0: fireLeft(gameShips[i]); break;
+                        case 1: fireRight(gameShips[i]); break;
+                        case 2: gameShips[i].angularFacing -= 0.5; break;
+                        case 3: gameShips[i].angularFacing -= 0.5; break;
+                    }
+                }
+            }
     }
+}
+
+function inSight(ship, target){
+    //console.log("ANGLE: "+ game.physics.arcade.angleBetween(ship,target));
 }
 
 function fireRight (ship) {

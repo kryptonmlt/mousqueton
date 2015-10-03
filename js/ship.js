@@ -23,4 +23,6 @@ function Ship(id, hull, weapon, projectile, specialPower, isHuman, teamId) {
   
   this.currentSpeed = 0;
   this.angularFacing = 0;
+  
+  sessionStorage.setItem("SHIP" + id, teamId);
 }
