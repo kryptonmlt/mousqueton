@@ -116,6 +116,8 @@ function create() {
         tempShip.body.angularDrag = 40;
         tempShip.body.maxAngular = 30;
         tempShip.body.maxVelocity = 30;
+        tempShip.teamId = ships[i].teamId;
+        tempShip.shipId = ships[i].id;
         if(ships[i].human){
             switch(humanPlayers){
                 case 0 : player1 = tempShip; humanPlayers++; break;
@@ -246,11 +248,12 @@ function update() {
         for(j=0; j < gameRocks.length; j++){
                 game.physics.arcade.collide(gameShips[i], gameRocks[j]);
         }
-    }
-
-    //Rocks
-    for(i=0; i < teams.length; i++){
-        //game.physics.arcade.overlap(shots, teams[i], shipHit, null, this);
+        //Shots
+        for(j=0; j<shots.children.length; j++){
+            if(shots.children[j].shipId != undefined && shots.children[j].shipId != i){
+                game.physics.arcade.overlap(shots.children[j], gameShips[i], shipHit, null, this);
+            }
+        }
     }
 
     //Rocks
@@ -273,6 +276,7 @@ function fireRight (ship) {
             shot.rotation = ship.rotation;
             game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), 400, shot.body.velocity);
             shotTimeRight = game.time.now + 500;
+            shot.shipId=ship.shipId;
         }
     }
 
@@ -291,6 +295,7 @@ function fireLeft (ship) {
             shot.rotation = ship.rotation;
             game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), 400, shot.body.velocity);
             shotTimeLeft = game.time.now + 500;
+            shot.shipId=ship.shipId;
         }
     }
 }
