@@ -8,9 +8,9 @@ var game = new Phaser.Game($(window).width() * gameScale, $(window).height() * g
 
 function populateShipsRandomly(){
     ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
-    ships[1] = new Ship(1, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, true, 0, 1000, 50);
-    ships[2] = new Ship(2, hull.BIG,    new Weapon(gun.BRIGADE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 1, 1000, 50);
-    ships[3] = new Ship(3, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, true, 1, 1000, 50);
+    ships[1] = new Ship(1, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
+    ships[2] = new Ship(2, hull.BIG,    new Weapon(gun.BRIGADE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
+    ships[3] = new Ship(3, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
 }
 
 function generateRocks(){
@@ -49,14 +49,10 @@ function preload() {
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
-    //game.load.image('diamond', 'assets/diamond.png');
-    game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
 
     populateShipsRandomly();
     generateRocks();
     console.log("Generated "+rocksInfo.length+" rocks");
-    
-    
 }
 
 var teams = [];
@@ -66,6 +62,7 @@ var player1;
 var player2;
 var player3;
 var player4;
+var currentSpeed = 0;
 var cursors;
 var SMALL_SHIP_SCALE = 0.05;
 var ROCKS_SCALE = 0.2;
@@ -78,24 +75,12 @@ var shotAngle = 0;
 var rocks;
 
 var angularFacing = 0;
-var explosions;
-//var movementCycle = 0;
+var movementCycle = 0;
 
 function create() {
 
     // Game Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    
-    //Explosion Animations
-    
-    explosions = game.add.group();
-    
-    for (var i = 0; i < 10; i++)
-    {
-        var explosionAnimation = explosions.create(0, 0, 'explosion', [0], false);
-        explosionAnimation.anchor.setTo(0.5, 0.5);
-        explosionAnimation.animations.add('explosion');
-    }
 
     // SEA Generation
     var sea = game.add.sprite(0, 0, 'sea');
@@ -137,11 +122,6 @@ function create() {
         tempShip.body.maxVelocity = 30;
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
-        
-        //Wake Generation
-       // wake = tempShip.addChild(game.add.emitter(tempShip.x, tempShip.y, 50));
-        //wake.makeParticles('diamond');
-        //wake.start(false,1000, 10);
 
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
@@ -157,7 +137,6 @@ function create() {
         //tempShip.scale.setTo(playerScaleX, playerScaleY);
 
     }
-       
 
     // ROCK Generation
     rocks = game.add.group();
@@ -384,13 +363,11 @@ function fireLeft (ship) {
 }
     
 function shipHit (shot, ship) {
+    console.log(shot.shipId + " shot " + ship.shipId);
     shot.kill();
     ship.health -= 1;
     if(ship.health <= 0){
-        var explosionAnimation = explosions.getFirstExists(false);
-        explosionAnimation.reset(ship.body.x, ship.body.y);
-        explosionAnimation.play('explosion', 30, false, true);
-        ship.kill();
+        ship.kill()
     }
 }
 function rockHit (rock, shot) { 
