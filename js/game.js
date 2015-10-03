@@ -124,7 +124,7 @@ function create() {
         tempShip.shipId = ships[i].id;
 
         gameShips[i]=tempShip;
-        if(ships[i].human){
+        if(ships[i].isHuman){
             switch(humanPlayers){
                 case 0 : player1 = gameShips[i]; humanPlayers++; break;
                 case 1 : player2 = gameShips[i]; humanPlayers++; break;
@@ -190,22 +190,23 @@ function update() {
     var speedChange = 0.5;
     
     //Player 1 Controls
-    
-    if (cursors.up.isDown)  {
-        player1.currentSpeed += speedChange;}
-    else if (player1.currentSpeed > 0){
-           player1.currentSpeed -= speedChange;}
+    if(player1){
+        if (cursors.up.isDown)  {
+            player1.currentSpeed += speedChange;}
+        else if (player1.currentSpeed > 0){
+               player1.currentSpeed -= speedChange;}
 
-    if (cursors.left.isDown){
-        player1.angularFacing -= 0.5;}
-    else if (cursors.right.isDown){
-        player1.angularFacing += 0.5;}
-    
-    if (game.input.keyboard.isDown(Phaser.Keyboard.Z)){
-        fireLeft(player1);}
-    
-    if (game.input.keyboard.isDown(Phaser.Keyboard.X)){
-        fireRight(player1);}
+        if (cursors.left.isDown){
+            player1.angularFacing -= 0.5;}
+        else if (cursors.right.isDown){
+            player1.angularFacing += 0.5;}
+        
+        if (game.input.keyboard.isDown(Phaser.Keyboard.Z)){
+            fireLeft(player1);}
+        
+        if (game.input.keyboard.isDown(Phaser.Keyboard.X)){
+            fireRight(player1);}
+    }
     
     //Player 2 Controls
     
