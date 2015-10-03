@@ -88,9 +88,9 @@ function create() {
     team2.enableBody = true;
     badGuy = team2.create(game.world.width/1.5, game.world.height/1.5, 'ship');
     player = team1.create(game.world.width/3, game.world.height/3, 'ship');
-	var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/player.width;
-	var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
-	player.scale.setTo(playerScaleX, playerScaleY);
+    //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/player.width;
+    //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/player.height;
+    //team1.scale.setTo(playerScaleX, playerScaleY);
 
 
     //  Player physics properties. Give the little guy a slight bounce.
@@ -134,7 +134,7 @@ function update() {
     {
         if (currentSpeed > 0)
         {
-            currentSpeed -= 0.5;
+           currentSpeed -= 0.5;
         }
     }
 
