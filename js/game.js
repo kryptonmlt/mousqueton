@@ -6,6 +6,34 @@ var gameScale = 1;
 var gameWidth = 800;
 var gameHeight = 600;
 
+//Enums
+
+var HULL = {
+    SMALL: new hull(75, 0.7, 0.7), // fastest but weakest
+    MEDIUM: new hull(100, 0.5, 0.5),
+    BIG: new hull(125, 0.4, 0.4) // strongest but slowest
+};
+
+var PROJECTILE = {
+    ARMOR_PIERCING: new projectile(300, 10),
+    NORMAL: new projectile(400, 5),
+    LIGHT: new projectile(500, 0)
+};
+
+var GUN = {
+    SNIPER: new weapon (25, 800), //slowest - high damage
+    BARRAGE: new weapon (20, 500), //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: new weapon (15, 350) // fastest firing - low damage
+};
+
+var specialPower = {
+    ACCEL: 0, // increases acceleration
+    DAMAGE: 1, // increases damage output
+    STEALTH: 2 //goes invisible
+};
+
+// End Enums
+
 $(window).resize(function() { window.resizeGame(); } );
 
 function startGame(){
@@ -13,10 +41,10 @@ function startGame(){
 }
 
 function populateShipsRandomly(){
-    ships[0] = new Ship(0, hull.SMALL,  new Weapon(gun.SNIPER,  new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, true, 0, 1000, 50);
-    ships[1] = new Ship(1, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.DAMAGE, false, 0, 1000, 50);
-    ships[2] = new Ship(2, hull.BIG,    new Weapon(gun.BRIGADE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.ACCEL, false, 1, 1000, 50);
-    ships[3] = new Ship(3, hull.MEDIUM, new Weapon(gun.BARRAGE, new Projectile(Direction.PERPENDICULAR, 40, 200), 5), specialPower.STEALTH, false, 1, 1000, 50);
+    ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.NORMAL, specialPower.ACCEL, true, 0);
+    ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.DAMAGE, true, 0);
+    ships[2] = new Ship(2, HULL.BIG,    GUN.BRIGADE, PROJECTILE.NORMAL, specialPower.ACCEL, true, 1);
+    ships[3] = new Ship(3, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.STEALTH, true, 1);
 }
 
 function generateRocks(){
@@ -55,7 +83,6 @@ function preload() {
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
-    //game.load.image('diamond', 'assets/diamond.png');
     game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
 
     populateShipsRandomly();
@@ -76,7 +103,6 @@ var player4;
 var cursors;
 var SMALL_SHIP_SCALE = 0.05;
 var ROCKS_SCALE = 0.2;
-var speedChange = 0.5;
 
 var shots;
 var shot;
@@ -85,10 +111,8 @@ var shotTimeRight = 0;
 var shotAngle = 0;
 var rocks;
 
-var angularFacing = 0;
-var explosions;
 var survivors;
-//var movementCycle = 0;
+var finished = 0;
 
 function addBackground(assetName) {
     
@@ -103,17 +127,6 @@ function create() {
     // Game Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
     
-    //Explosion Animations
-    
-    explosions = game.add.group();
-    
-    for (var i = 0; i < 10; i++)
-    {
-        var explosionAnimation = explosions.create(0, 0, 'explosion', [0], false);
-        explosionAnimation.anchor.setTo(0.5, 0.5);
-        explosionAnimation.animations.add('explosion');
-    }
-
     // SEA Generation
     addBackground('sea');
 
@@ -143,7 +156,7 @@ function create() {
         }
         tempShip.currentSpeed = 0;
         tempShip.angularFacing = 0;
-        tempShip.Health = 10;
+        tempShip.Health = 100;
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
         tempShip.body.drag.set(10);
@@ -153,10 +166,7 @@ function create() {
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
-        //Wake Generation
-       // wake = tempShip.addChild(game.add.emitter(tempShip.x, tempShip.y, 50));
-        //wake.makeParticles('diamond');
-        //wake.start(false,1000, 10);
+
 
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
@@ -167,9 +177,6 @@ function create() {
                 case 3 : player4 = gameShips[i]; humanPlayers++; break;
             }
         }
-        //var playerScaleX = (SMALL_SHIP_SCALE*game.camera.width)/tempShip.width;
-        //var playerScaleY = (SMALL_SHIP_SCALE*game.camera.height)/tempShip.height;
-        //tempShip.scale.setTo(playerScaleX, playerScaleY);
     }
        
 
@@ -238,9 +245,9 @@ function DoBoxesIntersect(aX, aWidth, aY, aHeight, bX, bWidth, bY, bHeight) {
 
 function getShipFromType(hull){
     switch(hull){
-        case 0: return "ship0";
-        case 1: return "ship1";
-        case 2: return "ship2";
+        case HULL.SMALL: return "ship0";
+        case HULL.MEDIUM: return "ship1";
+        case HULL.BIG: return "ship2";
     }
     return "ship3";
 }
@@ -254,14 +261,14 @@ function update() {
     //Player 1 Controls
     if(player1){
         if (cursors.up.isDown)  {
-            player1.currentSpeed += speedChange;}
+            player1.currentSpeed += player1.acceleration;}
         else if (player1.currentSpeed > 0){
-               player1.currentSpeed -= speedChange;}
+               player1.currentSpeed -= player1.acceleration;}
 
         if (cursors.left.isDown){
-            player1.angularFacing -= 0.5;}
+            player1.angularFacing -= player1.turnSpeed;}
         else if (cursors.right.isDown){
-            player1.angularFacing += 0.5;}
+            player1.angularFacing += player1.turnSpeed;}
         
         if (game.input.keyboard.isDown(Phaser.Keyboard.Z)){
             fireLeft(player1);}
@@ -274,14 +281,14 @@ function update() {
     
     if (player2){
        if (game.input.keyboard.isDown(Phaser.Keyboard.W))  {
-        player2.currentSpeed += speedChange;}
+        player2.currentSpeed += player2.acceleration;}
     else if (player2.currentSpeed > 0){
-           player2.currentSpeed -= speedChange;}
+           player2.currentSpeed -= player2.acceleration;}
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.A)){
-        player2.angularFacing -= 0.5;}
+        player2.angularFacing -= player2.turnSpeed;}
     else if (game.input.keyboard.isDown(Phaser.Keyboard.D)){
-        player2.angularFacing += 0.5;}
+        player2.angularFacing += player2.turnSpeed;}
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.Q)){
         fireLeft(player2);}
@@ -294,14 +301,14 @@ function update() {
     
     if (player3){
         if (game.input.keyboard.isDown(Phaser.Keyboard.I))  {
-        player3.currentSpeed += speedChange;}
+        player3.currentSpeed += player3.acceleration;}
     else if (player3.currentSpeed > 0){
-           player3.currentSpeed -= speedChange;}
+           player3.currentSpeed -= player3.acceleration;}
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
-        player3.angularFacing -= 0.5;}
+        player3.angularFacing -= player3.turnSpeed;}
     else if (game.input.keyboard.isDown(Phaser.Keyboard.L)){
-        player3.angularFacing += 0.5;}
+        player3.angularFacing += player3.turnSpeed;}
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.U)){
         fireLeft(player3);}
@@ -314,14 +321,14 @@ function update() {
     
     if (player4){
        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8))  {
-        player4.currentSpeed += speedChange;}
+        player4.currentSpeed += player4.acceleration;}
     else if (player4.currentSpeed > 0){
-           player4.currentSpeed -= speedChange;}
+           player4.currentSpeed -= player4.acceleration;}
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_4)){
-        player4.angularFacing -= 0.5;}
+        player4.angularFacing -= player4.turnSpeed;}
     else if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_6)){
-        player4.angularFacing += 0.5;}
+        player4.angularFacing += player4.turnSpeed;}
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_7)){
         fireLeft(player4);}
@@ -428,10 +435,10 @@ function fireRight (ship) {
             if (shot)
             {
                 shot.reset(ship.body.x + ship.body.halfWidth, ship.body.y + ship.body.halfHeight);
-                shot.lifespan = 2000;
+                shot.lifespan = ship.range;
                 shot.rotation = ship.rotation;
-                game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), 400, shot.body.velocity);
-                shotTimeRight = game.time.now + 500;
+                game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), ship.projectileSpeed, shot.body.velocity);
+                shotTimeRight = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
             }
         }  
@@ -448,10 +455,10 @@ function fireLeft (ship) {
             if (shot)
             {
                 shot.reset(ship.body.x + ship.body.halfWidth, ship.body.y + ship.body.halfHeight);
-                shot.lifespan = 2000;
+                shot.lifespan = ship.range;
                 shot.rotation = ship.rotation;
-                game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), 400, shot.body.velocity);
-                shotTimeLeft = game.time.now + 500;
+                game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), ship.projectileSpeed, shot.body.velocity);
+                shotTimeLeft = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
             }
         }
@@ -460,11 +467,8 @@ function fireLeft (ship) {
     
 function shipHit (shot, ship) {
     shot.kill();
-    ship.health -= 1;
+    ship.health -= shot.damage;
     if(ship.health <= 0){
-        var explosionAnimation = explosions.getFirstExists(false);
-        explosionAnimation.reset(ship.body.x, ship.body.y);
-        explosionAnimation.play('explosion', 30, false, true);
         ship.kill();
     }
 }
@@ -473,24 +477,27 @@ function rockHit (rock, shot) {
 }
 
 function checkWinner(){
-    survivors = 0;
-    var winner;
-    for (i in gameShips){
-        var ship = gameShips[i];
-        if (ship.health > 0){
-            survivors++;
-            winner = ship.shipId;
+    if (finished = 0){
+        survivors = 0;
+        var winner;
+        for (i in gameShips){
+            var ship = gameShips[i];
+            if (ship.health > 0){
+                survivors++;
+                winner = ship.shipId;
+            }
         }
+        if (survivors == 1){
+            //Win Screen
+            var winText = game.add.text(20, game.height/2, "Player " + (winner+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
+            winText.stroke = "#de77ae";
+            winText.strokeThickness = 16;
+            //  Apply the shadow to the Stroke and the Fill (this is the default)
+            winText.setShadow(2, 2, "#333333", 2, true, true);
+        }
+        else if (survivors == 0){
+            //Draw Screen
+        }       
     }
-    if (survivors == 1){
-        //Win Screen
-        var winText = game.add.text(20, game.height/2, "Player " + (winner+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
-        winText.stroke = "#de77ae";
-        winText.strokeThickness = 16;
-        //  Apply the shadow to the Stroke and the Fill (this is the default)
-        winText.setShadow(2, 2, "#333333", 2, true, true);
-    }
-    else if (survivors == 0){
-        //Draw Screen
-    }
+
 }

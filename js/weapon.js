@@ -1,12 +1,11 @@
 
-var gun = {
-    SNIPER: 0, //slowest - high damage
-    BARRAGE: 1, //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: 2 // fastest firing - low damage
+var GUN = {
+    SNIPER: new weapon (25, 800), //slowest - high damage
+    BARRAGE: new weapon (20, 500), //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: new weapon (15, 350) // fastest firing - low damage
 };
 
-function Weapon(gun, projectile, reloadTime){
-    this.gun = gun;
-    this.projectile = projectile;
+function weapon(damage, reloadTime){
+    this.damage = damage;
     this.reloadTime = reloadTime;
 }

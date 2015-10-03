@@ -1,26 +1,25 @@
 
-
-var hull = {
-    SMALL: 0, // fastest but weakest
-    MEDIUM: 1,
-    BIG: 2 // strongest but slowest
-};
-
 var specialPower = {
     ACCEL: 0, // increases acceleration
     DAMAGE: 1, // increases damage output
     STEALTH: 2 //goes invisible
 };
 
-function Ship(id, hull, weapon, specialPower, isHuman, teamId, health, acceleration) {
+function Ship(id, hull, weapon, projectile, specialPower, isHuman, teamId) {
   this.id = id;
-  this.hull = hull;
-  this.weapon = weapon;
-  this.specialPower = specialPower;
+  this.hull = hull;  
   this.isHuman = isHuman;
   this.teamId = teamId;
-  this.health = health;
-  this.acceleration = acceleration;
+  
+  this.specialPower = specialPower;
+  this.damage = weapon.damage + projectile.damage;
+  this.reloadTime = weapon.reloadTime;
+  this.range = projectile.range;
+  this.health = hull.health;
+  this.acceleration = hull.acceleration;
+  this.turnSpeed = hull.turnSpeed;
+  this.projectileSpeed = projectile.speed;
+  
   
   this.currentSpeed = 0;
   this.angularFacing = 0;
