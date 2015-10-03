@@ -6,3 +6,12 @@ body {
 	text-align: center;
 }        
 
+.container
+{
+    margin: 0 auto;
+}
+
+.display
+{
+    margin: 0 auto;
+}
