@@ -190,7 +190,7 @@ function update() {
     }
     else if (cursors.right.isDown)
     {
-        angularFacing += 5;
+        angularFacing += 0.5;
     }
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.Z))
