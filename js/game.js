@@ -1,12 +1,15 @@
 var ships = [];
 var rocksInfo = [];
 
-var gameScale = 0.75
+var gameScale = 0.75;
+
+var gameWidth = 800;
+var gameHeight = 600;
 
 $(window).resize(function() { window.resizeGame(); } );
 
 function startGame(){
-    game = new Phaser.Game($(window).width() * gameScale, $(window).height() * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(gameWidth * gameScale, gameHeight * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 }
 
 function populateShipsRandomly(){
@@ -28,8 +31,8 @@ function generateRocks(){
 }
 
 function resizeGame() {
-    var height = $(window).height() * gameScale;
-    var width = $(window).width() * gameScale;
+    var height = gameHeight * gameScale;
+    var width = gameWidth * gameScale;
     console.log("Setting screen size to: ("+width+","+height+")");
         
     game.width = width;
