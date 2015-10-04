@@ -15,15 +15,15 @@ var HULL = {
 };
 
 var PROJECTILE = {
-    ARMOR_PIERCING: new projectile(300, 10),
-    NORMAL: new projectile(400, 5),
+    ARMOR_PIERCING: new projectile(300, 3),
+    NORMAL: new projectile(400, 1),
     LIGHT: new projectile(500, 0)
 };
 
 var GUN = {
-    SNIPER: new weapon (25, 800), //slowest - high damage
-    BARRAGE: new weapon (20, 500), //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: new weapon (15, 350) // fastest firing - low damage
+    SNIPER: new weapon (40, 1100), //slowest - high damage
+    BARRAGE: new weapon (10, 800), //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: new weapon (5, 450) // fastest firing - low damage
 };
 
 var specialPower = {
