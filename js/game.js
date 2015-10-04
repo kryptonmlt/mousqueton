@@ -184,6 +184,7 @@ function preload() {
     game.load.audio('brigAud', 'assets/audio/brigade.wav');
     game.load.audio('barAud', 'assets/audio/barrage.wav');
     game.load.audio('snipAud', 'assets/audio/sniper.wav');
+    game.load.audio('hitAud', 'assets/audio/hit.wav');
     game.load.audio('themeSong', 'assets/audio/themeSong.mp3');
 
     loadData();
@@ -220,6 +221,14 @@ var survivors;
 var finished = 0;
 var winner;
 var button;
+
+//audio
+var deathAud;
+var brigAud;
+var barAud;
+var snipAud;
+var hitAud;
+var themeSong;
 
 function addBackground(assetName) {
     
@@ -284,6 +293,7 @@ function create() {
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
+        tempShip.gunType = ships[i].gunType;
         healthbars[i] = new HealthBar(this.game, {x: tempShip.body.x, y: tempShip.body.y+tempShip.body.height, width: 100, height:15, 
             bar: {color: 'green'}});
         //this.myHealthBar.setPercent(100); 
@@ -387,8 +397,9 @@ function create() {
     brigAud = game.add.audio('brigAud');
     barAud = game.add.audio('barAud');
     snipAud = game.add.audio('snipAud');
+    hitAud = game.add.audio('hitAud');
     themeSong = game.add.audio('themeSong');
-
+    themeSong.loop=true;
     themeSong.play();
     
 }
@@ -637,8 +648,16 @@ function fireRight (ship) {
                 shotTimeRight = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
                 shot.damage = ship.damage;
+                playFireSound(ship);
             }
         }  
+    }
+}
+function playFireSound(ship){
+    switch(ship.gunType){
+        case GUN.SNIPER: snipAud.play();break;
+        case GUN.BARRAGE: barAud.play();break;
+        case GUN.BRIGADE: brigAud.play();break;
     }
 }
 
@@ -663,6 +682,7 @@ function fireLeft (ship) {
                 shotTimeLeft = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
                 shot.damage = ship.damage;
+                playFireSound(ship);
             }
         }
     }
@@ -671,12 +691,14 @@ function fireLeft (ship) {
 function shipHit (shot, ship) {
     ship.health -= shot.damage;
     shot.kill();
+    hitAud.play();
     if(ship.health <= 0 || isNaN(ship.health)){
         //explosion = game.add.sprite(ship.body.center.x, ship.body.center.y, 'boom', 0);
         //anim = explosion.animations.add('boomboom');
         //anim.play('boomboom');
         //anim.onComplete.add(clean(explosion), this)
         ship.kill();
+        deathAud.play();
     }
 }
 function rockHit (rock, shot) { 
