@@ -86,7 +86,8 @@ function preload() {
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
-    game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
+    game.load.image('healthFront', 'assets/healthFront.png');
+    game.load.image('healthBack', 'assets/healthBack.png');
 
     populateShipsRandomly();
     generateRocks();
@@ -95,6 +96,7 @@ function preload() {
     
 }
 
+var Healthbars = [];
 var teams = [];
 var gameShips = [];
 var gameRocks = [];
@@ -162,6 +164,7 @@ function create() {
         tempShip.angularFacing = 0;
         
         tempShip.health = ships[i].health;
+        tempShip.maxHealth = ships[i].health;
         tempShip.specialPower = ships[i].specialPower;
         tempShip.damage = ships[i].damage;
         tempShip.reloadTime = ships[i].reloadTime;
@@ -245,6 +248,28 @@ function create() {
     shots.createMultiple(40, 'shot');
     shots.setAll('anchor.x', 0.5);
     shots.setAll('anchor.y', 0.5);
+    
+    //Healthbars
+   /* for(i=0; i < gameShips.length; i++){
+        switch(i){
+            case 0: game.add.sprite(20,30,'healthBack');
+                    var healthBar = this.game.add.sprite(20,30,'healthFront');
+                    Healthbars[i] = healthBar;
+                    break;
+            case 1: game.add.sprite(20,game.height-30,'healthBack');
+                    var healthBar = this.game.add.sprite(20,game.height-30,'healthFront');
+                    Healthbars[i] = healthBar;
+                    break;
+            case 2: game.add.sprite(game.width - 20,30,'healthBack');
+                    var healthBar = this.game.add.sprite(game.width - 20,30,'healthFront');
+                    Healthbars[i] = healthBar;
+                    break;
+            case 3: game.add.sprite(game.width - 20,game.width - 30,'healthBack');
+                    var healthBar = this.game.add.sprite(game.width - 20,game.width - 30,'healthFront');
+                    Healthbars[i] = healthBar;
+                    break;
+        }
+    }  */
     
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
@@ -491,6 +516,7 @@ function fireLeft (ship) {
     
 function shipHit (shot, ship) {
     ship.health -= shot.damage;
+    //Healthbars[ship.id].crop.width =(ship.health/ship.maxHealth) * Healthbars[ship.id].width;
     shot.kill();
     if(ship.health <= 0 || isNaN(ship.health)){
         ship.kill();
