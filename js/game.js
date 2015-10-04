@@ -121,6 +121,13 @@ function preload() {
     game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
     game.load.image('replay', 'assets/replay.png');
 
+    //Load audio
+    game.load.audio('deathAud', 'assets/audio/playerDeath.wav');
+    game.load.audio('brigAud', 'assets/audio/brigade.wav');
+    game.load.audio('barAud', 'assets/audio/barrage.wav');
+    game.load.audio('snipAud', 'assets/audio/sniper.wav');
+    game.load.audio('themeSong', 'assets/audio/themeSong.mp3');
+
     loadData();
     generateRocks();
     console.log("Generated "+rocksInfo.length+" rocks");
@@ -315,6 +322,15 @@ function create() {
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+
+    // Audio Generation
+    deathAud = game.add.audio('deathAud');
+    brigAud = game.add.audio('brigAud');
+    barAud = game.add.audio('barAud');
+    snipAud = game.add.audio('snipAud');
+    themeSong = game.add.audio('themeSong');
+
+    themeSong.play();
     
 }
 
