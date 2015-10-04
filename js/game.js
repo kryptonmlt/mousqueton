@@ -363,6 +363,8 @@ function create() {
     
     //  All 40 of them
     APshots.createMultiple(40, 'AP');
+    APshots.setAll('outOfBoundsKill', true);
+    APshots.setAll('checkWorldBounds', true);
     APshots.setAll('anchor.x', 0.5);
     APshots.setAll('anchor.y', 0.5);
     
@@ -372,6 +374,8 @@ function create() {
     
     //  All 40 of them
     lightShots.createMultiple(40, 'lightShot');
+    lightShots.setAll('outOfBoundsKill', true);
+    lightShots.setAll('checkWorldBounds', true);
     lightShots.setAll('anchor.x', 0.5);
     lightShots.setAll('anchor.y', 0.5);
     
@@ -381,6 +385,8 @@ function create() {
     
     //  All 40 of them
     barrageShots.createMultiple(40, 'barrage');
+    barrageShots.setAll('outOfBoundsKill', true);
+    barrageShots.setAll('checkWorldBounds', true);
     barrageShots.setAll('anchor.x', 0.5);
     barrageShots.setAll('anchor.y', 0.5);
      
