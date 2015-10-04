@@ -279,7 +279,6 @@ function create() {
     barrageShots.physicsBodyType = Phaser.Physics.ARCADE;
     
     //  All 40 of them
-<<<<<<< HEAD
     barrageShots.createMultiple(40, 'barrage');
     barrageShots.setAll('anchor.x', 0.5);
     barrageShots.setAll('anchor.y', 0.5);
@@ -309,13 +308,7 @@ function create() {
                     break;
         }
     }  */
-    
-=======
-    shots.createMultiple(40, 'shot');
-    shots.setAll('anchor.x', 0.5);
-    shots.setAll('anchor.y', 0.5);
-         
->>>>>>> 8c6c5390f9391f130db628db934bdc395ec61486
+           
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
