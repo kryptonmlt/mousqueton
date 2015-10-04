@@ -100,6 +100,7 @@ var Healthbars = [];
 var teams = [];
 var gameShips = [];
 var gameRocks = [];
+var gameTexts = [];
 var score  = [];
 var player1;
 var player2;
@@ -181,7 +182,9 @@ function create() {
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
-
+        gameTexts[i] = game.add.text(tempShip.body.x, tempShip.body.y+tempShip.body.height, 'Player '+(ships[i].id+1),  
+            { font: "20px Arial", fill: "#000000"});
+        //gameTexts[i].anchor.set(0.5);
 
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
@@ -193,7 +196,6 @@ function create() {
             }
         }
     }
-       
 
     // ROCK Generation
     rocks = game.add.group();
@@ -274,7 +276,9 @@ function create() {
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
 }
-
+function generateHexColor() { 
+    return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
+}
 function DoBoxesIntersect(aX, aWidth, aY, aHeight, bX, bWidth, bY, bHeight) {
   var result= (Math.abs(aX - bX) * 2 < (aWidth + bWidth)) && (Math.abs(aY - bY) * 2 < (aHeight + bHeight));
   return result;
@@ -424,6 +428,12 @@ function update() {
     //Rocks
     for(i=0; i < gameRocks.length; i++){
         game.physics.arcade.overlap(shots, gameRocks[i], rockHit, null, this);
+    }
+
+    //Update text
+    for(i =0;i<gameTexts.length; i++){
+            gameTexts[i].x = gameShips[i].body.x;
+            gameTexts[i].y = gameShips[i].body.y+gameShips[i].body.height;
     }
 
     //AI
