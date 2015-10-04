@@ -14,7 +14,7 @@ var TEAMS = {
     TEAM_D : 3
 }
 
-var AVAILABLE_TEAMS = {
+AVAILABLE_TEAMS = {
     UNASSIGNED: ["No team assigned"],
     TWO_1v1:    [TEAMS.TEAM_A, TEAMS.TEAM_B],
     THREE_2v1:  [TEAMS.TEAM_A, TEAMS.TEAM_B, TEAMS.TEAM_C],
@@ -39,4 +39,22 @@ function pickFromAvailableTeams()
     
     showShips();
     console.log("Teams: " + assignedTeams);
+}
+
+prefixes = ["Hull", "Weapon", "Projectile"]
+
+function setupGame(teamArrangement) {
+    
+    sessionStorage.clear();
+
+    for (var i = 0; i < teamArrangement.length; i++) {
+        
+        sessionStorage.setItem("Team" + i, teamArrangement[i]);
+        
+        for (var j = 0; j < prefixes.length; j++) {
+            var radioID = "p" + j + prefixes[j];
+            var radioVal = 2;
+            sessionStorage.setItem(prefixes[j] + i, radioVal);
+        }
+    }
 }

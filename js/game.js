@@ -39,6 +39,37 @@ function startGame(){
     game = new Phaser.Game(gameWidth * gameScale, gameHeight * gameScale, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 }
 
+function loadData() {
+    
+    if(typeof sessionStorage.Team0 != 'undefined') {
+        console.log("Stored values found.");
+        var maxShips = 4;
+        for (var i = 0; i < maxShips; i++) {
+            if (sessionStorage.getItem("Team" + i)) {
+                var team = sessionStorage.getItem("Team" + i)
+                var hull = sessionStorage.getItem("Hull" + i)
+                var weapon = sessionStorage.getItem("Weapon" + i)
+                var projectile = sessionStorage.getItem("Projectile" + i)
+                
+                console.log("Team" + i + ": " + team)
+                console.log("Hull" + i + ": " + hull)
+                console.log("Weapon" + i + ": " + weapon)
+                console.log("Projectile" + i + ": " + projectile)
+                                
+                ships[i] = new Ship(i, hull, weapon, projectile, 0, true, team);
+                
+            } else {
+                console.log("Can't find Ship" + i + " in storage, breaking.")
+                maxShips = i;
+            }
+        }
+        console.log("Found " + maxShips + " ships.")
+    } else {
+        console.log("No stored values found, using random generation.");
+        populateShipsRandomly();
+    }
+}
+
 function populateShipsRandomly(){
     ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.ARMOR_PIERCING, specialPower.ACCEL, true, 0);
     ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.LIGHT, specialPower.DAMAGE, true, 0);
@@ -92,7 +123,7 @@ function preload() {
     game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
     game.load.image('replay', 'assets/replay.png');
 
-    populateShipsRandomly();
+    loadData();
     generateRocks();
     console.log("Generated "+rocksInfo.length+" rocks");
     
