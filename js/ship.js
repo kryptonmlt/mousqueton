@@ -14,6 +14,7 @@ function Ship(id, hull, weapon, projectile, specialPower, isHuman, teamId) {
   this.specialPower = specialPower;
   this.damage = weapon.damage + projectile.damage;
   this.reloadTime = weapon.reloadTime;
+  this.gunType = weapon;
   this.range = projectile.range;
   this.health = hull.health;
   this.maxHealth = hull.health;
