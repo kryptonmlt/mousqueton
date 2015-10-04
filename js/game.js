@@ -56,7 +56,7 @@ function loadData() {
                 console.log("Weapon" + i + ": " + weapon);
                 console.log("Projectile" + i + ": " + projectile);
                                 
-                ships[i] = new Ship(i, HULL.SMALL, GUN.BARRAGE, PROJECTILE.NORMAL, 0, true, team);
+                ships[i] = new Ship(i, parseHull(hull), parseWeapon(weapon), parseProjectile(projectile), 0, true, team);
                 
             } else {
                 console.log("Can't find Ship" + i + " in storage, breaking.")
@@ -68,6 +68,66 @@ function loadData() {
         console.log("No stored values found, using random generation.");
         populateShipsRandomly();
     }
+}
+
+function parseHull (hullString) {
+    
+    var result = null;
+    
+    switch (hullString) {
+    
+    case "Galley":
+        result = HULL.SMALL;
+        break;
+    case "Barque":
+        result = HULL.MEDIUM;
+        break;
+    case "Yacht":
+        result = HULL.BIG;
+        break;
+    }
+    
+    return result;
+}
+
+function parseWeapon (weaponString) {
+    
+    var result = null;
+    
+    switch (weaponString) {
+        
+        case "Sniper":
+            result = GUN.SNIPER;
+            break;
+        case "Barrage":
+            result = GUN.BARRAGE;
+            break;
+        case "Brigade":
+            result = GUN.BRIGADE;
+            break;
+    }
+    
+    return result;
+}
+
+function parseProjectile (projectileString) {
+    
+    var result = null;
+    
+    switch (projectileString) {
+        
+        case "Armor":
+            result = PROJECTILE.ARMOR_PIERCING;
+            break;
+        case "Normal":
+            result = PROJECTILE.NORMAL;
+            break;
+        case "Light":
+            result = PROJECTILE.LIGHT;
+            break;
+    }
+    
+    return result;
 }
 
 function populateShipsRandomly(){
