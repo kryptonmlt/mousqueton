@@ -750,7 +750,7 @@ function checkWinner(){
 }
 
 function restart(){
-    window.location = "../index.html";
+    window.location = "index.html";
 }
 
 function contains(a, obj) {
