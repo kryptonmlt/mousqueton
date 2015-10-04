@@ -63,7 +63,7 @@ body {
 
 table.playerframe        
 {
-    border: 1px solid black;
+    border: 0.5em solid;
     width: 70%;
 }
 
