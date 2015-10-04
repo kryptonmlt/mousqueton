@@ -8,6 +8,7 @@ a:visited
 {
     color: #f7f44c;
     text-decoration: none;
+    cursor:pointer;
 }
 
 a:hover
@@ -17,11 +18,11 @@ a:hover
 }
 
 body {
-	margin: 0;
-	background: #25a4c4;
-	font-family: "My Custom Font", Courier, Arial;
-	color: #f7f44c;
-	text-align: center;
+    margin: 0;
+    background: #25a4c4;
+    font-family: "My Custom Font", Courier, Arial;
+    color: #f7f44c;
+    text-align: center;
 }        
 
 .container
@@ -70,23 +71,17 @@ table.playerframe
 
 .startButton {
     background-color:#21a39c;
-    -moz-border-radius:11px;
-    -webkit-border-radius:11px;
-    border-radius:11px;
-    border:12px solid #2a536e;
+    border:0.5em solid;
     display:inline-block;
-    cursor:pointer;
-    color:#d2f21b;
-    font-family:Courier New;
-    font-size:26px;
     font-weight:bold;
-    padding:4px 30px;
-    text-decoration:none;
+    padding:0.5em 2em;
     margin: 1em 0;
 }
 .startButton:hover {
     background-color:#1a273d;
 }
+
+/* makes it look like it's clicking */
 .startButton:active {
     position:relative;
     top:1px;
