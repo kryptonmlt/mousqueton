@@ -6,7 +6,7 @@ var gameScale = 1;
 var gameWidth = 800;
 var gameHeight = 600;
 
-//Enums
+    //Enums
 
 var HULL = {
     SMALL: new hull(75, 0.7, 0.7), // fastest but weakest
@@ -32,7 +32,6 @@ var specialPower = {
     STEALTH: 2 //goes invisible
 };
 
-// End Enums
 
 $(window).resize(function() { window.resizeGame(); } );
 
@@ -74,6 +73,10 @@ function resizeGame() {
 }
 
 function preload() {
+    
+
+
+// End Enums
 
     game.load.image('sea', 'assets/water0.png');
     game.load.image('ship0', 'assets/ship0.png');
@@ -95,6 +98,7 @@ function preload() {
 var teams = [];
 var gameShips = [];
 var gameRocks = [];
+var gameTexts = [];
 var score  = [];
 var player1;
 var player2;
@@ -156,7 +160,16 @@ function create() {
         }
         tempShip.currentSpeed = 0;
         tempShip.angularFacing = 0;
-        tempShip.Health = 100;
+        
+        tempShip.health = ships[i].health;
+        tempShip.specialPower = ships[i].specialPower;
+        tempShip.damage = ships[i].damage;
+        tempShip.reloadTime = ships[i].reloadTime;
+        tempShip.range = ships[i].range;
+        tempShip.acceleration = ships[i].acceleration;
+        tempShip.turnSpeed = ships[i].turnSpeed;
+        tempShip.projectileSpeed = ships[i].speed;
+        
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
         tempShip.body.drag.set(10);
@@ -166,7 +179,9 @@ function create() {
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
-
+        gameTexts[i] = game.add.text(tempShip.body.x, tempShip.body.y+tempShip.body.height, 'Player '+(ships[i].id+1),  
+            { font: "20px Arial", fill: "#000000"});
+        //gameTexts[i].anchor.set(0.5);
 
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
@@ -177,9 +192,7 @@ function create() {
                 case 3 : player4 = gameShips[i]; humanPlayers++; break;
             }
         }
-
     }
-       
 
     // ROCK Generation
     rocks = game.add.group();
@@ -238,7 +251,9 @@ function create() {
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
 }
-
+function generateHexColor() { 
+    return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
+}
 function DoBoxesIntersect(aX, aWidth, aY, aHeight, bX, bWidth, bY, bHeight) {
   var result= (Math.abs(aX - bX) * 2 < (aWidth + bWidth)) && (Math.abs(aY - bY) * 2 < (aHeight + bHeight));
   return result;
@@ -390,6 +405,12 @@ function update() {
         game.physics.arcade.overlap(shots, gameRocks[i], rockHit, null, this);
     }
 
+    //Update text
+    for(i =0;i<gameTexts.length; i++){
+            gameTexts[i].x = gameShips[i].body.x;
+            gameTexts[i].y = gameShips[i].body.y+gameShips[i].body.height;
+    }
+
     //AI
     aI();
     
@@ -441,6 +462,7 @@ function fireRight (ship) {
                 game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), ship.projectileSpeed, shot.body.velocity);
                 shotTimeRight = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
+                shot.damage = ship.damage;
             }
         }  
     }
@@ -461,15 +483,16 @@ function fireLeft (ship) {
                 game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), ship.projectileSpeed, shot.body.velocity);
                 shotTimeLeft = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
+                shot.damage = ship.damage;
             }
         }
     }
 }
     
 function shipHit (shot, ship) {
-    shot.kill();
     ship.health -= shot.damage;
-    if(ship.health <= 0){
+    shot.kill();
+    if(ship.health <= 0 || isNaN(ship.health)){
         ship.kill();
     }
 }
