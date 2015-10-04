@@ -9,21 +9,21 @@ var gameHeight = $(window).height();
     //Enums
 
 var HULL = {
-    SMALL: new hull(150, 0.7, 0.7), // fastest but weakest
-    MEDIUM: new hull(250, 0.5, 0.5),
-    BIG: new hull(400, 0.4, 0.4) // strongest but slowest
+    SMALL: new hull(150, 0.7, 1.2), // fastest but weakest
+    MEDIUM: new hull(250, 0.6, 1.0),
+    BIG: new hull(400, 0.4, 0.8) // strongest but slowest
 };
 
 var PROJECTILE = {
-    ARMOR_PIERCING: new projectile(300, 3),
-    NORMAL: new projectile(400, 1),
-    LIGHT: new projectile(500, 0)
+    ARMOR_PIERCING: new projectile(70, 10),
+    NORMAL: new projectile(130, 5),
+    LIGHT: new projectile(200, 0)
 };
 
 var GUN = {
-    SNIPER: new weapon (40, 1100), //slowest - high damage
-    BARRAGE: new weapon (10, 800), //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: new weapon (5, 450) // fastest firing - low damage
+    SNIPER: new weapon (80, 2000), //slowest - high damage
+    BARRAGE: new weapon (30, 950), //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: new weapon (10, 550) // fastest firing - low damage
 };
 
 var specialPower = {
@@ -433,9 +433,11 @@ function randomBetween(min, max){
 
 function update() {
     
+    var maxSpeed = 65;
+
     //Player 1 Controls
     if(player1){
-        if (cursors.up.isDown)  {
+        if (cursors.up.isDown && player1.currentSpeed < maxSpeed)  {
             player1.currentSpeed += player1.acceleration;}
         else if (player1.currentSpeed > 0){
                player1.currentSpeed -= player1.acceleration;}
