@@ -5,7 +5,8 @@ var GUN = {
     BRIGADE: new weapon (15, 350) // fastest firing - low damage
 };
 
-function weapon(damage, reloadTime){
+function weapon(damage, reloadTime, range){
     this.damage = damage;
     this.reloadTime = reloadTime;
+    this.range = range;
 }
