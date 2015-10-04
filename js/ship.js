@@ -16,6 +16,7 @@ function Ship(id, hull, weapon, projectile, specialPower, isHuman, teamId) {
   this.reloadTime = weapon.reloadTime;
   this.range = projectile.range;
   this.health = hull.health;
+  this.maxHealth = hull.health;
   this.acceleration = hull.acceleration;
   this.turnSpeed = hull.turnSpeed;
   this.projectileSpeed = projectile.speed;
@@ -34,8 +35,7 @@ function hull( health, acceleration, turnSpeed) {
     this.turnSpeed = turnSpeed; 
 }
 
-function projectile(direction, speed, damage){
-    this.direction = direction;
+function projectile(speed, damage){
     this.speed = speed;
     this.damage = damage;
 }
