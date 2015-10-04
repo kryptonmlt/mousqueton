@@ -86,13 +86,8 @@ function preload() {
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
-<<<<<<< HEAD
     game.load.image('healthbar', 'assets/healthbar.jpg');
     game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
-=======
-    game.load.image('healthFront', 'assets/healthFront.png');
-    game.load.image('healthBack', 'assets/healthBack.png');
->>>>>>> c4e4d0f15091136b3b888ae3060232e381224b64
 
     populateShipsRandomly();
     generateRocks();
@@ -101,7 +96,6 @@ function preload() {
     
 }
 
-var Healthbars = [];
 var teams = [];
 var gameShips = [];
 var gameRocks = [];
@@ -188,12 +182,15 @@ function create() {
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
-        healthbars[i] = this.game.add.sprite(tempShip.body.x, tempShip.body.y+tempShip.body.height,'healthbar');
-        healthbars[i].cropEnabled = true;
-        healthbars[i].crop.width = (tempShip.health / tempShip.maxHealth) * healthbars[i].width
+        //healthbars[i] = this.game.add.sprite(tempShip.body.x, tempShip.body.y+tempShip.body.height,'healthbar');
+        //healthbars[i].cropEnabled = true;
+        //healthbars[i].crop.width = (tempShip.health / tempShip.maxHealth) * healthbars[i].width
+        healthbars[i] = new HealthBar(this.game, {x: tempShip.body.x, y: tempShip.body.y+tempShip.body.height, width: 100, height:15, 
+            bar: {color: 'green'}});
+        //this.myHealthBar.setPercent(100); 
         gameTexts[i] = game.add.text(tempShip.body.x, tempShip.body.y+tempShip.body.height, 'Player '+(ships[i].id+1),  
             { font: "20px Arial", fill: "#000000"});
-        
+
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
             switch(humanPlayers){
@@ -256,29 +253,7 @@ function create() {
     shots.createMultiple(40, 'shot');
     shots.setAll('anchor.x', 0.5);
     shots.setAll('anchor.y', 0.5);
-    
-    //Healthbars
-   /* for(i=0; i < gameShips.length; i++){
-        switch(i){
-            case 0: game.add.sprite(20,30,'healthBack');
-                    var healthBar = this.game.add.sprite(20,30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-            case 1: game.add.sprite(20,game.height-30,'healthBack');
-                    var healthBar = this.game.add.sprite(20,game.height-30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-            case 2: game.add.sprite(game.width - 20,30,'healthBack');
-                    var healthBar = this.game.add.sprite(game.width - 20,30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-            case 3: game.add.sprite(game.width - 20,game.width - 30,'healthBack');
-                    var healthBar = this.game.add.sprite(game.width - 20,game.width - 30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-        }
-    }  */
-    
+         
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
@@ -431,6 +406,10 @@ function update() {
                 game.physics.arcade.overlap(shots.children[j], gameShips[i], shipHit, null, this);
             }
         }
+        if(ship.health <= 0 || isNaN(ship.health)){//ship died
+            //gameTexts[ship.id].kill();
+            //healthbars[ship.id].kill();
+        }
     }
 
     //Rocks
@@ -440,9 +419,10 @@ function update() {
 
     //Update healthbars
     for(i =0;i<healthbars.length; i++){
-        healthbars[i].x = gameShips[i].body.x;
-        healthbars[i].y = gameShips[i].body.y+gameShips[i].body.height;
-        healthbars[i].crop.width = (tempShip.health / tempShip.maxHealth) * healthbars[i].width
+        tempX = gameShips[i].body.x;
+        tempY = gameShips[i].body.y+gameShips[i].body.height;
+        healthbars[i].setPosition(tempX,tempY);
+        healthbars[i].setPercent((gameShips[i].health/gameShips[i].maxHealth)*100);
     }
 
     //Update text
@@ -531,10 +511,11 @@ function fireLeft (ship) {
     
 function shipHit (shot, ship) {
     ship.health -= shot.damage;
-    //Healthbars[ship.id].crop.width =(ship.health/ship.maxHealth) * Healthbars[ship.id].width;
     shot.kill();
     if(ship.health <= 0 || isNaN(ship.health)){
         ship.kill();
+        //gameTexts[ship.id].kill();
+        //healthbars[ship.id].kill();
     }
 }
 function rockHit (rock, shot) { 
