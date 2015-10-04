@@ -447,10 +447,10 @@ function update() {
         else if (cursors.right.isDown){
             player1.angularFacing += player1.turnSpeed;}
         
-        if (game.input.keyboard.isDown(Phaser.Keyboard.COMMA)){
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_2)){
             fireLeft(player1);}
         
-        if (game.input.keyboard.isDown(Phaser.Keyboard.PERIOD)){
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_3)){
             fireRight(player1);}
     }
     
