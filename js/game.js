@@ -46,17 +46,17 @@ function loadData() {
         var maxShips = 4;
         for (var i = 0; i < maxShips; i++) {
             if (sessionStorage.getItem("Team" + i)) {
-                var team = sessionStorage.getItem("Team" + i)
-                var hull = sessionStorage.getItem("Hull" + i)
-                var weapon = sessionStorage.getItem("Weapon" + i)
-                var projectile = sessionStorage.getItem("Projectile" + i)
+                var team = sessionStorage.getItem("Team" + i);
+                var hull = sessionStorage.getItem("Hull" + i);
+                var weapon = sessionStorage.getItem("Weapon" + i);
+                var projectile = sessionStorage.getItem("Projectile" + i);
                 
-                console.log("Team" + i + ": " + team)
-                console.log("Hull" + i + ": " + hull)
-                console.log("Weapon" + i + ": " + weapon)
-                console.log("Projectile" + i + ": " + projectile)
+                console.log("Team" + i + ": " + team);
+                console.log("Hull" + i + ": " + hull);
+                console.log("Weapon" + i + ": " + weapon);
+                console.log("Projectile" + i + ": " + projectile);
                                 
-                ships[i] = new Ship(i, hull, weapon, projectile, 0, true, team);
+                ships[i] = new Ship(i, HULL.SMALL, GUN.BARRAGE, PROJECTILE.NORMAL, 0, true, team);
                 
             } else {
                 console.log("Can't find Ship" + i + " in storage, breaking.")
@@ -105,8 +105,6 @@ function resizeGame() {
 
 function preload() {
 
-// End Enums
-
     game.load.image('sea', 'assets/water0.png');
     game.load.image('ship0', 'assets/ship0.png');
     game.load.image('ship1', 'assets/ship1.png');
@@ -118,7 +116,7 @@ function preload() {
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
     game.load.image('healthbar', 'assets/healthbar.jpg');
-    game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
+    game.load.spritesheet('boom', 'assets/explosion.png',32, 32, frameMax = 37);
     game.load.image('replay', 'assets/replay.png');
 
     loadData();
@@ -219,9 +217,6 @@ function create() {
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
-        //healthbars[i] = this.game.add.sprite(tempShip.body.x, tempShip.body.y+tempShip.body.height,'healthbar');
-        //healthbars[i].cropEnabled = true;
-        //healthbars[i].crop.width = (tempShip.health / tempShip.maxHealth) * healthbars[i].width
         healthbars[i] = new HealthBar(this.game, {x: tempShip.body.x, y: tempShip.body.y+tempShip.body.height, width: 100, height:15, 
             bar: {color: 'green'}});
         //this.myHealthBar.setPercent(100); 
@@ -278,6 +273,7 @@ function create() {
         var rocksScaleY = (ROCKS_SCALE*game.camera.height)/tempRock.height;
         tempRock.scale.setTo(rocksScaleX, rocksScaleY);
         tempRock.body.immovable = true;
+        
         gameRocks[i]=tempRock;
     }
 
@@ -314,37 +310,13 @@ function create() {
     shots.add(APshots);
     shots.add(lightShots);
     shots.add(barrageShots);
-    
-    //Healthbars
-   /* for(i=0; i < gameShips.length; i++){
-        switch(i){
-            case 0: game.add.sprite(20,30,'healthBack');
-                    var healthBar = this.game.add.sprite(20,30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-            case 1: game.add.sprite(20,game.height-30,'healthBack');
-                    var healthBar = this.game.add.sprite(20,game.height-30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-            case 2: game.add.sprite(game.width - 20,30,'healthBack');
-                    var healthBar = this.game.add.sprite(game.width - 20,30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-            case 3: game.add.sprite(game.width - 20,game.width - 30,'healthBack');
-                    var healthBar = this.game.add.sprite(game.width - 20,game.width - 30,'healthFront');
-                    Healthbars[i] = healthBar;
-                    break;
-        }
-    }  */
            
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
 }
-function generateHexColor() { 
-    return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
-}
+
 function DoBoxesIntersect(aX, aWidth, aY, aHeight, bX, bWidth, bY, bHeight) {
   var result= (Math.abs(aX - bX) * 2 < (aWidth + bWidth)) && (Math.abs(aY - bY) * 2 < (aHeight + bHeight));
   return result;
@@ -501,9 +473,11 @@ function update() {
                 game.physics.arcade.overlap(barrageShots.children[j], gameShips[i], shipHit, null, this);
             }
         }
-        if(ship.health <= 0 || isNaN(ship.health)){//ship died
-            //gameTexts[ship.id].kill();
-            //healthbars[ship.id].kill();
+        if(gameShips[i].health <= 0 || isNaN(gameShips[i].health)){//ship died
+            if(gameTexts[i].alpha){
+                gameTexts[i].alpha=0;
+                healthbars[i].setPosition(game.world.width+500,game.world.height+500);
+            }
         }
     }
 
@@ -516,10 +490,12 @@ function update() {
 
     //Update healthbars
     for(i =0;i<healthbars.length; i++){
-        tempX = gameShips[i].body.x;
-        tempY = gameShips[i].body.y+gameShips[i].body.height;
-        healthbars[i].setPosition(tempX,tempY);
-        healthbars[i].setPercent((gameShips[i].health/gameShips[i].maxHealth)*100);
+        if(gameShips[i].health >= 0 && !isNaN(gameShips[i].health)){//ship not dead
+            tempX = gameShips[i].body.x;
+            tempY = gameShips[i].body.y+gameShips[i].body.height;
+            healthbars[i].setPosition(tempX,tempY);
+            healthbars[i].setPercent((gameShips[i].health/gameShips[i].maxHealth)*100);
+        }
     }
 
     //Update text
@@ -620,13 +596,19 @@ function shipHit (shot, ship) {
     ship.health -= shot.damage;
     shot.kill();
     if(ship.health <= 0 || isNaN(ship.health)){
+        explosion = game.add.sprite(ship.body.center.x, ship.body.center.y, 'boom', 0);
+        anim = explosion.animations.add('boomboom');
+        anim.play('boomboom');
+        anim.onComplete.add(clean(explosion), this)
         ship.kill();
-        //gameTexts[ship.id].kill();
-        //healthbars[ship.id].kill();
     }
 }
 function rockHit (rock, shot) { 
     shot.kill();
+}
+
+function clean(thing){
+    thing.kill();
 }
 
 function checkWinner(){
