@@ -82,6 +82,7 @@ table.playerframe
     font-weight:bold;
     padding:4px 30px;
     text-decoration:none;
+    margin: 1em 0;
 }
 .startButton:hover {
     background-color:#1a273d;
