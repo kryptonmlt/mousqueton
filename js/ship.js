@@ -35,7 +35,8 @@ function hull( health, acceleration, turnSpeed) {
     this.turnSpeed = turnSpeed; 
 }
 
-function projectile(speed, damage){
+function projectile(speed, damage, range){
     this.speed = speed;
     this.damage = damage;
+    this.range = range;
 }
