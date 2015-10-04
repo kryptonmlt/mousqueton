@@ -457,7 +457,7 @@ function update() {
     //Player 2 Controls
     
     if (player2){
-       if (game.input.keyboard.isDown(Phaser.Keyboard.W))  {
+       if (game.input.keyboard.isDown(Phaser.Keyboard.W) && player2.currentSpeed < maxSpeed)  {
         player2.currentSpeed += player2.acceleration;}
     else if (player2.currentSpeed > 0){
            player2.currentSpeed -= player2.acceleration;}
@@ -477,7 +477,7 @@ function update() {
     //Player 3 Controls
     
     if (player3){
-        if (game.input.keyboard.isDown(Phaser.Keyboard.I))  {
+        if (game.input.keyboard.isDown(Phaser.Keyboard.I) && player3.currentSpeed < maxSpeed)  {
         player3.currentSpeed += player3.acceleration;}
     else if (player3.currentSpeed > 0){
            player3.currentSpeed -= player3.acceleration;}
@@ -497,7 +497,7 @@ function update() {
     //Player 4 Controls
     
     if (player4){
-       if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8))  {
+       if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8) && player4.currentSpeed < maxSpeed)  {
         player4.currentSpeed += player4.acceleration;}
     else if (player4.currentSpeed > 0){
            player4.currentSpeed -= player4.acceleration;}
