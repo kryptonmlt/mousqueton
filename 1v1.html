@@ -8,12 +8,14 @@
     <!-- engine scripts -->
     <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
     <style>
-        table, th, td {
+        table.playerframe        
+        {
             border: 1px solid black;
+            width: 70%;
         }
 
 
-        .myButton {
+        .startButton {
             background-color:#21a39c;
             -moz-border-radius:11px;
             -webkit-border-radius:11px;
@@ -28,74 +30,287 @@
             padding:4px 30px;
             text-decoration:none;
         }
-        .myButton:hover {
+        .startButton:hover {
             background-color:#1a273d;
         }
-        .myButton:active {
+        .startButton:active {
             position:relative;
             top:1px;
         }
 
+        .configTitle
+        {
+            font-weight: bold;
+            color: green;
+        }
+        
+        .imagebox
+        {
+            margin-top: 3em;
+            margin-bottom: 1em;
+            text-align: center;
+            
+        }
+        
+        .pro, .con, .meh
+        {
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .pro
+        {
+            color: lime;
+        }
+        
+        .con
+        {
+            color: red;
+        }
+        
+        .meh
+        {
+            color: gray;
+        }
     </style>
     
 </head>
 <body>
     <div align="center">
-    <h1>1 v 1</h1>
-        <img src="assets/ship0.png" alt="Pirate Ship" style="PADDING-TOP:30px;width:125px;height:25px;">
-        <img src="assets/ship1.png" alt="Pirate Ship" style="PADDING-TOP:30px;width:200px;height:40px;">
-        <img src="assets/ship2.png" alt="Pirate Ship" style="PADDING-TOP:30px;width:250px;height:50px;">
-        <table style="width:70%" cellpadding="10">
-          <tr>
-            <td>Player 1</td>
-            <td>Player 2</td> 
-          </tr>
-          <tr>
-            <td>
-          Hull:<br>      
-                <input type="radio" name="p1Ship" value="Galley">Galley
-                <input type="radio" name="p1Ship" value="Barque">Barque
-                <input type="radio" name="p1Ship" value="Yacht">Yacht
-            </td>
-            <td>
-          Hull:<br>          
-                <input type="radio" name="p2Ship" value="Galley">Galley
-                <input type="radio" name="p2Ship" value="Barque">Barque
-                <input type="radio" name="p2Ship" value="Yacht">Yacht
-            </td>
-          </tr>
-          <tr>
-            <td>
-          Weapon:<br>      
-                <input type="radio" name="p1Weapon" value="Sniper">Sniper
-                <input type="radio" name="p1Weapon" value="Barrage">Barrage
-                <input type="radio" name="p1Weapon" value="Brigade">Brigade
-            </td>
-            <td>
-          Weapon:<br>          
-                <input type="radio" name="p2Weapon" value="Sniper">Sniper
-                <input type="radio" name="p2Weapon" value="Barrage">Barrage
-                <input type="radio" name="p2Weapon" value="Brigade">Brigade
-            </td>
-          </tr>
-          <tr>
-            <td>
-          Ammo:<br>      
-                <input type="radio" name="p1Ammo" value="ArmorPiercing">Armor Piercing
-                <input type="radio" name="p1Ammo" value="Normal">Normal
-                <input type="radio" name="p1Ammo" value="LightPiercing">Light Piercing
-            </td>
-            <td>
-          Ammo:<br>          
-                <input type="radio" name="p2Ammo" value="ArmorPiercing">Armor Piercing
-                <input type="radio" name="p2Ammo" value="Normal">Normal
-                <input type="radio" name="p2Ammo" value="LightPiercing">Light Piercing
-            </td>
-          </tr>
+        <h1 title="360 noscope">1 v 1</h1>
+
+        <table class="imagebox" cellpadding="1em">
+            <tr>
+                <td>Galley</td>
+                <td>Barque</td>
+                <td>Yacht</td>
+            </tr>
+            <tr>
+                <td><img src="assets/ship2.png" alt="Pirate Ship" style="width:250px;height:50px;"></td>
+                <td><img src="assets/ship1.png" alt="Pirate Ship" style="width:200px;height:40px;"></td>
+                <td><img src="assets/ship0.png" alt="Pirate Ship" style="width:125px;height:25px;"></td>
+
+            </tr>
+        </table>
+        <table class="playerframe" cellpadding="10">
+            <tr>
+                <th>Player 1</th>
+                <th>Player 2</th> 
+            </tr>
+            <tr>
+                <td>
+                    <span class="configTitle">Hull</span><br>
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Ship" value="Galley">
+                            </td>
+                            <td>
+                                Galley
+                            </td>
+                            <td>
+                            - <span class="pro">+speed</span> <span class="con">-health</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Ship" value="Galley">
+                            </td>
+                            <td>
+                                Barque
+                            </td>
+                            <td>
+                            - <span class="meh">=speed =health</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Ship" value="Galley">
+                            </td>
+                            <td>
+                                Yacht
+                            </td>
+                            <td>
+                                - <span class="con">-speed</span> <span class="pro">+health</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <span class="configTitle">Hull</span><br>
+                    <table>
+                        <tr>
+                            <td>
+                            <input type="radio" name="p2Ship" value="Galley">Galley
+                            </td>
+                            <td> - <span class="pro">+speed</span> <span class="con">-health</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <input type="radio" name="p2Ship" value="Galley">Barque
+                            </td>
+                            <td> - <span class="meh">=speed =health</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <input type="radio" name="p2Ship" value="Galley">Yacht
+                            </td>
+                            <td> - <span class="con">-speed</span> <span class="pro">+health</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="configTitle">Weapon</span><br>
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Weapon" value="Galley">
+                            </td>
+                            <td>
+                                Sniper
+                            </td>
+                            <td>
+                            - <span class="pro">25 dmg</span> <span class="con">-reload</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Weapon" value="Galley">
+                            </td>
+                            <td>
+                                Barrage
+                            </td>
+                            <td>
+                            - <span class="meh">20 dmg =reload</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Weapon" value="Galley">
+                            </td>
+                            <td>
+                                Brigade
+                            </td>
+                            <td>
+                                - <span class="con">15 dmg</span> <span class="pro">+reload</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <span class="configTitle">Weapon</span><br>
+                    <table>
+                        <tr>
+                            <td>
+                            <input type="radio" name="p2Weapon" value="Galley">Galley
+                            </td>
+                            <td> - <span class="pro">25 dmg</span> <span class="con">-reload</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <input type="radio" name="p2Weapon" value="Galley">Barque
+                            </td>
+                            <td> - <span class="meh">20 dmg =reload</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <input type="radio" name="p2Weapon" value="Galley">Yacht
+                            </td>
+                            <td> - <span class="con">15 dmg</span> <span class="pro">+reload</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="configTitle">Ammo</span><br>
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Ammo" value="Galley">
+                            </td>
+                            <td>
+                                Armor Piercing
+                            </td>
+                            <td>
+                            - <span class="pro">+10 dmg</span> <span class="con">-speed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Ammo" value="Galley">
+                            </td>
+                            <td>
+                                Normal
+                            </td>
+                            <td>
+                            - <span class="meh">+ 5 dmg =speed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p1Ammo" value="Galley">
+                            </td>
+                            <td>
+                                Light Piercing
+                            </td>
+                            <td>
+                                - <span class="con">+ 0 dmg</span> <span class="pro">+speed</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <span class="configTitle">Ammo</span><br>
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p2Ammo" value="Galley">
+                            </td>
+                            <td>
+                                Armor Piercing
+                            </td>
+                            <td>
+                            - <span class="pro">+10 dmg</span> <span class="con">-speed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p2Ammo" value="Galley">
+                            </td>
+                            <td>
+                                Normal
+                            </td>
+                            <td>
+                            - <span class="meh">+ 5 dmg =speed</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="p2Ammo" value="Galley">
+                            </td>
+                            <td>
+                               Light Piercing
+                            </td>
+                            <td>
+                            - <span class="con">+ 0 dmg</span> <span class="pro">+speed</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
         <br>
         <br>
-        <a href="#" class="myButton">Sail Away!</a>
+        <a href="#" class="startButton">Sail Away!</a>
 
     </div>
 </body>
