@@ -9,9 +9,9 @@ var gameHeight = $(window).height();
     //Enums
 
 var HULL = {
-    SMALL: new hull(75, 0.7, 0.7), // fastest but weakest
-    MEDIUM: new hull(100, 0.5, 0.5),
-    BIG: new hull(125, 0.4, 0.4) // strongest but slowest
+    SMALL: new hull(150, 0.7, 0.7), // fastest but weakest
+    MEDIUM: new hull(250, 0.5, 0.5),
+    BIG: new hull(400, 0.4, 0.4) // strongest but slowest
 };
 
 var PROJECTILE = {
@@ -283,7 +283,7 @@ function create() {
         tempShip.range = ships[i].range;
         tempShip.acceleration = ships[i].acceleration;
         tempShip.turnSpeed = ships[i].turnSpeed;
-        tempShip.projectileSpeed = ships[i].speed;
+        tempShip.projectileSpeed = ships[i].projectileSpeed;
         tempShip.ammo = ships[i].ammo;
         
         tempShip.body.collideWorldBounds = true;
