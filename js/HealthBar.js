@@ -125,3 +125,13 @@ HealthBar.prototype.setWidth = function(newWidth){
   }
   this.game.add.tween(this.barSprite).to( { width: newWidth }, this.config.animationDuration, Phaser.Easing.Linear.None, true);
 };
+
+HealthBar.prototype.destroyObject = function(){
+  if(this.flipped) {
+    newWidth = -1 * newWidth;
+  }
+  this.barSprite.kill();
+  this.barSprite.x = game.world.width;
+  this.barSprite.y = game.world.height;
+  console.log("killing object...");
+};
