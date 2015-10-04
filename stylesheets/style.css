@@ -61,15 +61,9 @@ body {
     margin: 0 auto;
 }
 
-ul, ol, li
-{
-    list-style-type: none;
-}
-
-
 table.playerframe        
 {
-    border: 1px solid black;
+    border: 0.5em solid;
     width: 70%;
 }
 
@@ -88,6 +82,7 @@ table.playerframe
     font-weight:bold;
     padding:4px 30px;
     text-decoration:none;
+    margin: 1em 0;
 }
 .startButton:hover {
     background-color:#1a273d;
