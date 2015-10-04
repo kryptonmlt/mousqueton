@@ -41,9 +41,10 @@ function pickFromAvailableTeams()
     console.log("Teams: " + assignedTeams);
 }
 
-prefixes = ["Hull", "Weapon", "Projectile"]
-
 function setupGame(teamArrangement) {
+
+    storedKeys = ["Hull", "Weapon", "Projectile"] // 0 1 2 3
+    inputNames = ["Ship", "Weapon", "Ammo"] // 1 2 3 4
     
     sessionStorage.clear();
 
@@ -51,10 +52,26 @@ function setupGame(teamArrangement) {
         
         sessionStorage.setItem("Team" + i, teamArrangement[i]);
         
-        for (var j = 0; j < prefixes.length; j++) {
-            var radioID = "p" + j + prefixes[j];
-            var radioVal = 2;
-            sessionStorage.setItem(prefixes[j] + i, radioVal);
+        for (var j = 0; j < inputNames.length; j++) {
+            var radioID = "p" + (i+1) + inputNames[j];
+            var radioVal = null;
+            var radios = document.getElementsByName(radioID);
+            
+            console.log(radioID + " (checking " + radios.length + ")")
+            for (var k = 0, length = radios.length; k < length; k++) {  
+                
+                if (radios[k].checked) {
+                    // do whatever you want with the checked radio
+                    radioVal = radios[k].value
+                    sessionStorage.setItem(storedKeys[j] + i, radioVal);
+
+                    console.log(radioID + "|" + storedKeys[j] + i + " is k" + k  + "  " + radioVal + ", breaking.")
+                    // only one radio can be logically checked, don't check the rest
+                    break;
+                } else {
+                }
+            }
+
         }
     }
     

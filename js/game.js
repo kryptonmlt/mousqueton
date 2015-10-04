@@ -46,17 +46,17 @@ function loadData() {
         var maxShips = 4;
         for (var i = 0; i < maxShips; i++) {
             if (sessionStorage.getItem("Team" + i)) {
-                var team = sessionStorage.getItem("Team" + i)
-                var hull = sessionStorage.getItem("Hull" + i)
-                var weapon = sessionStorage.getItem("Weapon" + i)
-                var projectile = sessionStorage.getItem("Projectile" + i)
+                var team = sessionStorage.getItem("Team" + i);
+                var hull = sessionStorage.getItem("Hull" + i);
+                var weapon = sessionStorage.getItem("Weapon" + i);
+                var projectile = sessionStorage.getItem("Projectile" + i);
                 
-                console.log("Team" + i + ": " + team)
-                console.log("Hull" + i + ": " + hull)
-                console.log("Weapon" + i + ": " + weapon)
-                console.log("Projectile" + i + ": " + projectile)
+                console.log("Team" + i + ": " + team);
+                console.log("Hull" + i + ": " + hull);
+                console.log("Weapon" + i + ": " + weapon);
+                console.log("Projectile" + i + ": " + projectile);
                                 
-                ships[i] = new Ship(i, hull, weapon, projectile, 0, true, team);
+                ships[i] = new Ship(i, parseHull(hull), parseWeapon(weapon), parseProjectile(projectile), 0, true, team);
                 
             } else {
                 console.log("Can't find Ship" + i + " in storage, breaking.")
@@ -68,6 +68,66 @@ function loadData() {
         console.log("No stored values found, using random generation.");
         populateShipsRandomly();
     }
+}
+
+function parseHull (hullString) {
+    
+    var result = null;
+    
+    switch (hullString) {
+    
+    case "Galley":
+        result = HULL.SMALL;
+        break;
+    case "Barque":
+        result = HULL.MEDIUM;
+        break;
+    case "Yacht":
+        result = HULL.BIG;
+        break;
+    }
+    
+    return result;
+}
+
+function parseWeapon (weaponString) {
+    
+    var result = null;
+    
+    switch (weaponString) {
+        
+        case "Sniper":
+            result = GUN.SNIPER;
+            break;
+        case "Barrage":
+            result = GUN.BARRAGE;
+            break;
+        case "Brigade":
+            result = GUN.BRIGADE;
+            break;
+    }
+    
+    return result;
+}
+
+function parseProjectile (projectileString) {
+    
+    var result = null;
+    
+    switch (projectileString) {
+        
+        case "Armor":
+            result = PROJECTILE.ARMOR_PIERCING;
+            break;
+        case "Normal":
+            result = PROJECTILE.NORMAL;
+            break;
+        case "Light":
+            result = PROJECTILE.LIGHT;
+            break;
+    }
+    
+    return result;
 }
 
 function populateShipsRandomly(){
@@ -105,8 +165,6 @@ function resizeGame() {
 
 function preload() {
 
-// End Enums
-
     game.load.image('sea', 'assets/water0.png');
     game.load.image('ship0', 'assets/ship0.png');
     game.load.image('ship1', 'assets/ship1.png');
@@ -118,7 +176,7 @@ function preload() {
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
     game.load.image('healthbar', 'assets/healthbar.jpg');
-    game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
+    game.load.spritesheet('boom', 'assets/explosion.png',32, 32, frameMax = 37);
     game.load.image('replay', 'assets/replay.png');
 
     //Load audio
@@ -282,6 +340,7 @@ function create() {
         var rocksScaleY = (ROCKS_SCALE*game.camera.height)/tempRock.height;
         tempRock.scale.setTo(rocksScaleX, rocksScaleY);
         tempRock.body.immovable = true;
+        
         gameRocks[i]=tempRock;
     }
 
@@ -613,11 +672,19 @@ function shipHit (shot, ship) {
     ship.health -= shot.damage;
     shot.kill();
     if(ship.health <= 0 || isNaN(ship.health)){
+        //explosion = game.add.sprite(ship.body.center.x, ship.body.center.y, 'boom', 0);
+        //anim = explosion.animations.add('boomboom');
+        //anim.play('boomboom');
+        //anim.onComplete.add(clean(explosion), this)
         ship.kill();
     }
 }
 function rockHit (rock, shot) { 
     shot.kill();
+}
+
+function clean(thing){
+    thing.kill();
 }
 
 function checkWinner(){
