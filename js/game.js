@@ -88,12 +88,7 @@ function preload() {
     game.load.image('rock2', 'assets/rock2.png');
     game.load.image('healthbar', 'assets/healthbar.jpg');
     game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
-<<<<<<< HEAD
-=======
-    game.load.image('healthFront', 'assets/healthFront.png');
-    game.load.image('healthBack', 'assets/healthBack.png');
     game.load.image('replay', 'assets/replay.png');
->>>>>>> f4fca0c3e4067ee6fcd7cbcf2f9d19dff2ca27f9
 
     populateShipsRandomly();
     generateRocks();
