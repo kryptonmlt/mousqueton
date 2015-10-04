@@ -104,8 +104,6 @@ function resizeGame() {
 }
 
 function preload() {
-    
-
 
 // End Enums
 
@@ -126,8 +124,7 @@ function preload() {
     loadData();
     generateRocks();
     console.log("Generated "+rocksInfo.length+" rocks");
-    
-    
+
 }
 
 var teams = [];

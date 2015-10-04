@@ -57,4 +57,6 @@ function setupGame(teamArrangement) {
             sessionStorage.setItem(prefixes[j] + i, radioVal);
         }
     }
+    
+    window.location.assign("game.html");
 }
