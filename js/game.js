@@ -596,10 +596,10 @@ function shipHit (shot, ship) {
     ship.health -= shot.damage;
     shot.kill();
     if(ship.health <= 0 || isNaN(ship.health)){
-        explosion = game.add.sprite(ship.body.center.x, ship.body.center.y, 'boom', 0);
-        anim = explosion.animations.add('boomboom');
-        anim.play('boomboom');
-        anim.onComplete.add(clean(explosion), this)
+        //explosion = game.add.sprite(ship.body.center.x, ship.body.center.y, 'boom', 0);
+        //anim = explosion.animations.add('boomboom');
+        //anim.play('boomboom');
+        //anim.onComplete.add(clean(explosion), this)
         ship.kill();
     }
 }
