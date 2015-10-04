@@ -86,6 +86,7 @@ function preload() {
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
+    game.load.image('healthbar', 'assets/healthbar.jpg');
     game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
 
     populateShipsRandomly();
@@ -100,6 +101,7 @@ var gameShips = [];
 var gameRocks = [];
 var gameTexts = [];
 var score  = [];
+var healthbars = [];
 var player1;
 var player2;
 var player3;
@@ -179,10 +181,12 @@ function create() {
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
+        healthbars[i] = this.game.add.sprite(tempShip.body.x, tempShip.body.y+tempShip.body.height,'healthbar');
+        healthbars[i].cropEnabled = true;
+        healthbars[i].crop.width = (tempShip.health / tempShip.maxHealth) * healthbars[i].width
         gameTexts[i] = game.add.text(tempShip.body.x, tempShip.body.y+tempShip.body.height, 'Player '+(ships[i].id+1),  
             { font: "20px Arial", fill: "#000000"});
-        //gameTexts[i].anchor.set(0.5);
-
+        
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
             switch(humanPlayers){
@@ -403,6 +407,13 @@ function update() {
     //Rocks
     for(i=0; i < gameRocks.length; i++){
         game.physics.arcade.overlap(shots, gameRocks[i], rockHit, null, this);
+    }
+
+    //Update healthbars
+    for(i =0;i<healthbars.length; i++){
+        healthbars[i].x = gameShips[i].body.x;
+        healthbars[i].y = gameShips[i].body.y+gameShips[i].body.height;
+        healthbars[i].crop.width = (tempShip.health / tempShip.maxHealth) * healthbars[i].width
     }
 
     //Update text
