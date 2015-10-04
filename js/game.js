@@ -21,9 +21,9 @@ var PROJECTILE = {
 };
 
 var GUN = {
-    SNIPER: new weapon (80, 2000), //slowest - high damage
-    BARRAGE: new weapon (30, 950), //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: new weapon (10, 550) // fastest firing - low damage
+    SNIPER: new weapon (80, 2000, 4000), //slowest - high damage
+    BARRAGE: new weapon (30, 950, 3000), //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: new weapon (10, 550, 3000) // fastest firing - low damage
 };
 
 var specialPower = {
