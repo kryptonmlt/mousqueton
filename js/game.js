@@ -1,7 +1,7 @@
 var ships = [];
 var rocksInfo = [];
 
-var gameScale = 1;
+var gameScale = 0.8;
 
 var gameWidth = $(window).width();
 var gameHeight = $(window).height();
