@@ -9,6 +9,7 @@ for (var i = 0; i < prefixes.length; i++) {
         var radioID = "p" + i + prefixes[i];
         var radioVal = -1;
 
+        
         console.log (j + prefixes[i] + " " + radioID + " " );
         sessionStorage.setItem(prefixes[i] + j, radioVal);
     }
