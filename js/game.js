@@ -88,6 +88,7 @@ function preload() {
     game.load.image('rock2', 'assets/rock2.png');
     game.load.image('healthFront', 'assets/healthFront.png');
     game.load.image('healthBack', 'assets/healthBack.png');
+    game.load.image('replay', 'assets/replay.png');
 
     populateShipsRandomly();
     generateRocks();
@@ -119,6 +120,8 @@ var rocks;
 
 var survivors;
 var finished = 0;
+var winner;
+var button;
 
 function addBackground(assetName) {
     
@@ -527,27 +530,42 @@ function rockHit (rock, shot) {
 }
 
 function checkWinner(){
-    if (finished = 0){
-        survivors = 0;
-        var winner;
+    if (finished != 1){
+        survivors = [];
         for (i in gameShips){
             var ship = gameShips[i];
             if (ship.health > 0){
-                survivors++;
-                winner = ship.shipId;
+                if (!contains(survivors,ship.teamId )){
+                    survivors.push(ship.teamId);
+                }
             }
         }
-        if (survivors == 1){
+        if (survivors.length == 1){
             //Win Screen
-            var winText = game.add.text(20, game.height/2, "Player " + (winner+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
+            var winText = game.add.text(50, game.height/2 - 20, "Team " + (survivors[0]+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
             winText.stroke = "#de77ae";
             winText.strokeThickness = 16;
             //  Apply the shadow to the Stroke and the Fill (this is the default)
             winText.setShadow(2, 2, "#333333", 2, true, true);
+            button = game.add.button(100, game.height - 160, 'replay', restart, this);
+            finished = 1;
         }
-        else if (survivors == 0){
+        else if (survivors.length == 0){
             //Draw Screen
         }       
     }
 
+}
+
+function restart(){
+    window.location = "http://kryptonmlt.github.io/mousqueton/";
+}
+
+function contains(a, obj) {
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] == obj) {
+            return true;
+        }
+    }
+    return false;
 }
