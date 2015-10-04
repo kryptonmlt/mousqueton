@@ -86,17 +86,11 @@ function preload() {
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
-<<<<<<< HEAD
     game.load.image('healthbar', 'assets/healthbar.jpg');
     game.load.spritesheet('explosion', 'assets/explosion.png',32, 32, frameMax = 37);
-=======
     game.load.image('healthFront', 'assets/healthFront.png');
     game.load.image('healthBack', 'assets/healthBack.png');
-<<<<<<< HEAD
     game.load.image('replay', 'assets/replay.png');
-=======
->>>>>>> c4e4d0f15091136b3b888ae3060232e381224b64
->>>>>>> d4442bc054066bc099bb9d3c02814ef929af58ef
 
     populateShipsRandomly();
     generateRocks();
