@@ -21,6 +21,7 @@ function Ship(id, hull, weapon, projectile, specialPower, isHuman, teamId) {
   this.turnSpeed = hull.turnSpeed;
   this.projectileSpeed = projectile.speed;
   this.maxHealth=hull.health;
+  this.ammo = projectile;
   
   
   this.currentSpeed = 0;

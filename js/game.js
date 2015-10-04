@@ -3,8 +3,8 @@ var rocksInfo = [];
 
 var gameScale = 1;
 
-var gameWidth = 800;
-var gameHeight = 600;
+var gameWidth = $(window).width();
+var gameHeight = $(window).height();
 
     //Enums
 
@@ -40,8 +40,8 @@ function startGame(){
 }
 
 function populateShipsRandomly(){
-    ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.NORMAL, specialPower.ACCEL, true, 0);
-    ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.DAMAGE, true, 0);
+    ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.ARMOR_PIERCING, specialPower.ACCEL, true, 0);
+    ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.LIGHT, specialPower.DAMAGE, true, 0);
     ships[2] = new Ship(2, HULL.BIG,    GUN.BRIGADE, PROJECTILE.NORMAL, specialPower.ACCEL, true, 1);
     ships[3] = new Ship(3, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.STEALTH, true, 1);
 }
@@ -82,7 +82,9 @@ function preload() {
     game.load.image('ship0', 'assets/ship0.png');
     game.load.image('ship1', 'assets/ship1.png');
     game.load.image('ship2', 'assets/ship2.png');
-    game.load.image('shot', 'assets/shot.png');
+    game.load.image('lightShot', 'assets/cannonball.png');
+    game.load.image('AP', 'assets/shot.png');
+    game.load.image('barrage', 'assets/barrage.png');
     game.load.image('rock0', 'assets/rock0.png');
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
@@ -115,6 +117,9 @@ var SMALL_SHIP_SCALE = 0.05;
 var ROCKS_SCALE = 0.2;
 
 var shots;
+var APshots;
+var lightShots;
+var barrageShots;
 var shot;
 var shotTimeLeft = 0;
 var shotTimeRight = 0;
@@ -178,6 +183,7 @@ function create() {
         tempShip.acceleration = ships[i].acceleration;
         tempShip.turnSpeed = ships[i].turnSpeed;
         tempShip.projectileSpeed = ships[i].speed;
+        tempShip.ammo = ships[i].ammo;
         
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
@@ -249,13 +255,37 @@ function create() {
 
     // SHOT Generation
     shots = game.add.group();
-    shots.enableBody = true;
-    shots.physicsBodyType = Phaser.Physics.ARCADE;
+    
+    APshots = game.add.group();
+    APshots.enableBody = true;
+    APshots.physicsBodyType = Phaser.Physics.ARCADE;
     
     //  All 40 of them
-    shots.createMultiple(40, 'shot');
-    shots.setAll('anchor.x', 0.5);
-    shots.setAll('anchor.y', 0.5);
+    APshots.createMultiple(40, 'AP');
+    APshots.setAll('anchor.x', 0.5);
+    APshots.setAll('anchor.y', 0.5);
+    
+    lightShots = game.add.group();
+    lightShots.enableBody = true;
+    lightShots.physicsBodyType = Phaser.Physics.ARCADE;
+    
+    //  All 40 of them
+    lightShots.createMultiple(40, 'lightShot');
+    lightShots.setAll('anchor.x', 0.5);
+    lightShots.setAll('anchor.y', 0.5);
+    
+    barrageShots = game.add.group();
+    barrageShots.enableBody = true;
+    barrageShots.physicsBodyType = Phaser.Physics.ARCADE;
+    
+    //  All 40 of them
+    barrageShots.createMultiple(40, 'barrage');
+    barrageShots.setAll('anchor.x', 0.5);
+    barrageShots.setAll('anchor.y', 0.5);
+     
+    shots.add(APshots);
+    shots.add(lightShots);
+    shots.add(barrageShots);
     
     //Healthbars
    /* for(i=0; i < gameShips.length; i++){
@@ -425,17 +455,31 @@ function update() {
         for(j=0; j < gameRocks.length; j++){
                 game.physics.arcade.collide(gameShips[i], gameRocks[j]);
         }
-        //Shots
-        for(j=0; j<shots.children.length; j++){
-            if(shots.children[j].shipId != undefined && shots.children[j].shipId != i){
-                game.physics.arcade.overlap(shots.children[j], gameShips[i], shipHit, null, this);
+        //APshots
+        for(j=0; j<APshots.children.length; j++){
+            if(APshots.children[j].shipId != undefined && APshots.children[j].shipId != i){
+                game.physics.arcade.overlap(APshots.children[j], gameShips[i], shipHit, null, this);
+            }
+        }
+        //lightShots
+        for(j=0; j<lightShots.children.length; j++){
+            if(lightShots.children[j].shipId != undefined && lightShots.children[j].shipId != i){
+                game.physics.arcade.overlap(lightShots.children[j], gameShips[i], shipHit, null, this);
+            }
+        }
+        //barrageShots
+        for(j=0; j<barrageShots.children.length; j++){
+            if(barrageShots.children[j].shipId != undefined && barrageShots.children[j].shipId != i){
+                game.physics.arcade.overlap(barrageShots.children[j], gameShips[i], shipHit, null, this);
             }
         }
     }
 
     //Rocks
     for(i=0; i < gameRocks.length; i++){
-        game.physics.arcade.overlap(shots, gameRocks[i], rockHit, null, this);
+        game.physics.arcade.overlap(APshots, gameRocks[i], rockHit, null, this);
+        game.physics.arcade.overlap(lightShots, gameRocks[i], rockHit, null, this);
+        game.physics.arcade.overlap(barrageShots, gameRocks[i], rockHit, null, this);
     }
 
     //Update healthbars
@@ -492,8 +536,13 @@ function fireRight (ship) {
     if (ship.health>0){
         if (game.time.now > shotTimeRight)
         {
-            shot = shots.getFirstExists(false);
-
+            console.log(ship.ammo);
+            switch (ship.ammo){
+                case(PROJECTILE.ARMOR_PIERCING):    shot = APshots.getFirstExists(false); break;
+                case(PROJECTILE.NORMAL):            shot = barrageShots.getFirstExists(false); break;
+                case(PROJECTILE.LIGHT):             shot = lightShots.getFirstExists(false); break;
+            }
+            
             if (shot)
             {
                 shot.reset(ship.body.x + ship.body.halfWidth, ship.body.y + ship.body.halfHeight);
@@ -513,7 +562,12 @@ function fireLeft (ship) {
     if (ship.health>0){
         if (game.time.now > shotTimeLeft)
         {
-            shot = shots.getFirstExists(false);
+            console.log(ship.ammo);
+            switch (ship.ammo){
+                case(PROJECTILE.ARMOR_PIERCING):    shot = APshots.getFirstExists(false); break;
+                case(PROJECTILE.NORMAL):            shot = barrageShots.getFirstExists(false); break;
+                case(PROJECTILE.LIGHT):             shot = lightShots.getFirstExists(false); break;
+            }
 
             if (shot)
             {
