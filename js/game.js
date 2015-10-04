@@ -658,7 +658,7 @@ function checkWinner(){
 }
 
 function restart(){
-    window.location = "http://kryptonmlt.github.io/mousqueton/";
+    window.location = "../index.html";
 }
 
 function contains(a, obj) {
