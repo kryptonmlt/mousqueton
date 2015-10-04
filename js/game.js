@@ -733,7 +733,7 @@ function checkWinner(){
         }
         if (survivors.length == 1){
             //Win Screen
-            var winText = game.add.text(50, game.height/2 - 20, "Team " + (survivors[0]+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
+            var winText = game.add.text(50, game.height/2 - 20, "Team " + (parseInt(survivors[0])+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
             winText.stroke = "#de77ae";
             winText.strokeThickness = 16;
             //  Apply the shadow to the Stroke and the Fill (this is the default)
