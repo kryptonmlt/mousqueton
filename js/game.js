@@ -15,15 +15,15 @@ var HULL = {
 };
 
 var PROJECTILE = {
-    ARMOR_PIERCING: new projectile(300, 10),
-    NORMAL: new projectile(400, 5),
+    ARMOR_PIERCING: new projectile(300, 3),
+    NORMAL: new projectile(400, 1),
     LIGHT: new projectile(500, 0)
 };
 
 var GUN = {
-    SNIPER: new weapon (25, 800), //slowest - high damage
-    BARRAGE: new weapon (20, 500), //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: new weapon (15, 350) // fastest firing - low damage
+    SNIPER: new weapon (40, 1100), //slowest - high damage
+    BARRAGE: new weapon (10, 800), //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: new weapon (5, 450) // fastest firing - low damage
 };
 
 var specialPower = {
@@ -186,6 +186,7 @@ function preload() {
     game.load.audio('snipAud', 'assets/audio/sniper.wav');
     game.load.audio('hitAud', 'assets/audio/hit.wav');
     game.load.audio('themeSong', 'assets/audio/themeSong.mp3');
+    game.load.audio('victory', 'assets/audio/victory.mp3');
 
     loadData();
     generateRocks();
@@ -229,6 +230,7 @@ var barAud;
 var snipAud;
 var hitAud;
 var themeSong;
+var vicSong;
 
 function addBackground(assetName) {
     
@@ -405,6 +407,7 @@ function create() {
     snipAud = game.add.audio('snipAud');
     hitAud = game.add.audio('hitAud');
     themeSong = game.add.audio('themeSong');
+    vicSong = game.add.audio('victory');
     themeSong.loop=true;
     themeSong.play();
     
@@ -735,6 +738,7 @@ function checkWinner(){
             winText.setShadow(2, 2, "#333333", 2, true, true);
             button = game.add.button(100, game.height - 160, 'replay', restart, this);
             finished = 1;
+            vicSong.play();
         }
         else if (survivors.length == 0){
             //Draw Screen
