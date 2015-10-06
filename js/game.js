@@ -66,7 +66,6 @@ function loadData() {
         console.log("Found " + maxShips + " ships.")
     } else {
         console.log("No stored values found, using random generation.");
-        populateShipsRandomly();
     }
 }
 
@@ -130,13 +129,6 @@ function parseProjectile (projectileString) {
     return result;
 }
 
-function populateShipsRandomly(){
-    ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.ARMOR_PIERCING, specialPower.ACCEL, true, 0);
-    ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.LIGHT, specialPower.DAMAGE, true, 0);
-    ships[2] = new Ship(2, HULL.BIG,    GUN.BRIGADE, PROJECTILE.NORMAL, specialPower.ACCEL, true, 1);
-    ships[3] = new Ship(3, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.STEALTH, true, 1);
-}
-
 function generateRocks(){
     var rocksTotal = randomBetween(1,3);
     for(i=0; i < rocksTotal; i++){
@@ -176,7 +168,6 @@ function preload() {
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
     game.load.image('healthbar', 'assets/healthbar.jpg');
-    game.load.spritesheet('boom', 'assets/explosion.png',32, 32, frameMax = 37);
     game.load.image('replay', 'assets/replay.png');
 
     //Load audio
@@ -198,17 +189,14 @@ var teams = [];
 var gameShips = [];
 var gameRocks = [];
 var gameTexts = [];
-var score  = [];
 var healthbars = [];
 var player1;
 var player2;
 var player3;
 var player4;
 var cursors;
-var SMALL_SHIP_SCALE = 0.05;
 var ROCKS_SCALE = 0.2;
 
-var shots;
 var APshots;
 var lightShots;
 var barrageShots;
@@ -277,7 +265,6 @@ function create() {
         
         tempShip.health = ships[i].health;
         tempShip.maxHealth = ships[i].health;
-        tempShip.specialPower = ships[i].specialPower;
         tempShip.damage = ships[i].damage;
         tempShip.reloadTime = ships[i].reloadTime;
         tempShip.range = ships[i].range;
@@ -297,8 +284,7 @@ function create() {
         tempShip.isHuman = ships[i].isHuman;
         tempShip.gunType = ships[i].gunType;
         healthbars[i] = new HealthBar(this.game, {x: tempShip.body.x, y: tempShip.body.y+tempShip.body.height, width: 100, height:15, 
-            bar: {color: 'green'}});
-        //this.myHealthBar.setPercent(100); 
+            bar: {color: 'green'}}); 
         gameTexts[i] = game.add.text(tempShip.body.x, tempShip.body.y+tempShip.body.height, 'Player '+(ships[i].id+1),  
             { font: "20px Arial", fill: "#000000"});
 
@@ -357,7 +343,6 @@ function create() {
     }
 
     // SHOT Generation
-    shots = game.add.group();
     
     APshots = game.add.group();
     APshots.enableBody = true;
@@ -391,10 +376,6 @@ function create() {
     barrageShots.setAll('checkWorldBounds', true);
     barrageShots.setAll('anchor.x', 0.5);
     barrageShots.setAll('anchor.y', 0.5);
-     
-    shots.add(APshots);
-    shots.add(lightShots);
-    shots.add(barrageShots);
            
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
@@ -449,7 +430,6 @@ function update() {
         
         if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_2)){
             fireLeft(player1);}
-        
         if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_3)){
             fireRight(player1);}
     }
@@ -469,7 +449,6 @@ function update() {
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.Q)){
         fireLeft(player2);}
-    
     if (game.input.keyboard.isDown(Phaser.Keyboard.E)){
         fireRight(player2);} 
     }
@@ -489,7 +468,6 @@ function update() {
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.U)){
         fireLeft(player3);}
-    
     if (game.input.keyboard.isDown(Phaser.Keyboard.O)){
         fireRight(player3);}
     }
@@ -509,7 +487,6 @@ function update() {
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_7)){
         fireLeft(player4);}
-    
     if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_9)){
         fireRight(player4);} 
     }
@@ -519,21 +496,15 @@ function update() {
         if (ship.angularFacing >= 15)
         {
             ship.rotation += Math.PI/12;
-            //ghost.rotation += Math.PI/12;
             ship.angularFacing -= 15;
         }
     
         if (ship.angularFacing <= -15)
         {
             ship.rotation -= Math.PI/12;
-            //ghost.rotation -= Math.PI/12;
             ship.angularFacing += 15;
         }
     }
-    //if (game.time.now >= movementCycle){
-        //player1.position.set(ghost.position);
-        //movementCycle = game.time.now + 2000;
-    //}
     
     //game.physics.arcade.velocityFromRotation(ghost.rotation, currentSpeed, ghost.body.velocity);
     for (var i in gameShips){
@@ -704,20 +675,12 @@ function shipHit (shot, ship) {
     shot.kill();
     hitAud.play();
     if(ship.health <= 0 || isNaN(ship.health)){
-        //explosion = game.add.sprite(ship.body.center.x, ship.body.center.y, 'boom', 0);
-        //anim = explosion.animations.add('boomboom');
-        //anim.play('boomboom');
-        //anim.onComplete.add(clean(explosion), this)
         ship.kill();
         deathAud.play();
     }
 }
 function rockHit (rock, shot) { 
     shot.kill();
-}
-
-function clean(thing){
-    thing.kill();
 }
 
 function checkWinner(){
@@ -736,7 +699,6 @@ function checkWinner(){
             var winText = game.add.text(50, game.height/2 - 20, "Team " + (parseInt(survivors[0])+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
             winText.stroke = "#de77ae";
             winText.strokeThickness = 16;
-            //  Apply the shadow to the Stroke and the Fill (this is the default)
             winText.setShadow(2, 2, "#333333", 2, true, true);
             button = game.add.button(100, game.height - 160, 'replay', restart, this);
             finished = 1;
