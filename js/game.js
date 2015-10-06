@@ -213,8 +213,6 @@ var APshots;
 var lightShots;
 var barrageShots;
 var shot;
-var shotTimeLeft = 0;
-var shotTimeRight = 0;
 var shotAngle = 0;
 var rocks;
 
@@ -274,6 +272,8 @@ function create() {
         }
         tempShip.currentSpeed = 0;
         tempShip.angularFacing = 0;
+        tempShip.shotTimeLeft = 0;
+        tempShip.shotTimeRight = 0;
         
         tempShip.health = ships[i].health;
         tempShip.maxHealth = ships[i].health;
@@ -641,7 +641,7 @@ function inSight(ship, target){
 function fireRight (ship) {
     
     if (ship.health>0){
-        if (game.time.now > shotTimeRight)
+        if (game.time.now > ship.shotTimeRight)
         {
             console.log(ship.ammo);
             switch (ship.ammo){
@@ -656,7 +656,7 @@ function fireRight (ship) {
                 shot.lifespan = ship.range;
                 shot.rotation = ship.rotation;
                 game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), ship.projectileSpeed, shot.body.velocity);
-                shotTimeRight = game.time.now + ship.reloadTime;
+                ship.shotTimeRight = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
                 shot.damage = ship.damage;
                 playFireSound(ship);
@@ -675,7 +675,7 @@ function playFireSound(ship){
 function fireLeft (ship) {
 
     if (ship.health>0){
-        if (game.time.now > shotTimeLeft)
+        if (game.time.now > ship.shotTimeLeft)
         {
             console.log(ship.ammo);
             switch (ship.ammo){
@@ -690,7 +690,7 @@ function fireLeft (ship) {
                 shot.lifespan = ship.range;
                 shot.rotation = ship.rotation;
                 game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), ship.projectileSpeed, shot.body.velocity);
-                shotTimeLeft = game.time.now + ship.reloadTime;
+                ship.shotTimeLeft = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
                 shot.damage = ship.damage;
                 playFireSound(ship);

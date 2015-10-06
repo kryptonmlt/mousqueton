@@ -27,6 +27,8 @@ function Ship(id, hull, weapon, projectile, specialPower, isHuman, teamId) {
   
   this.currentSpeed = 0;
   this.angularFacing = 0;
+  this.shotTimeRight = 0;
+  this.shotTimeLeft = 0;
 }
 
 function hull( health, acceleration, turnSpeed) {
