@@ -9,21 +9,21 @@ var gameHeight = $(window).height();
     //Enums
 
 var HULL = {
-    SMALL: new hull(75, 0.7, 0.7), // fastest but weakest
-    MEDIUM: new hull(100, 0.5, 0.5),
-    BIG: new hull(125, 0.4, 0.4) // strongest but slowest
+    SMALL: new hull(150, 0.7, 1.2), // fastest but weakest
+    MEDIUM: new hull(250, 0.6, 1.0),
+    BIG: new hull(400, 0.4, 0.8) // strongest but slowest
 };
 
 var PROJECTILE = {
-    ARMOR_PIERCING: new projectile(300, 10),
-    NORMAL: new projectile(400, 5),
-    LIGHT: new projectile(500, 0)
+    ARMOR_PIERCING: new projectile(70, 10),
+    NORMAL: new projectile(130, 5),
+    LIGHT: new projectile(200, 0)
 };
 
 var GUN = {
-    SNIPER: new weapon (25, 800), //slowest - high damage
-    BARRAGE: new weapon (20, 500), //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: new weapon (15, 350) // fastest firing - low damage
+    SNIPER: new weapon (80, 2000, 4000), //slowest - high damage
+    BARRAGE: new weapon (30, 950, 3000), //fires a barrage of bombs - longest to reload - medium damage
+    BRIGADE: new weapon (10, 550, 3000) // fastest firing - low damage
 };
 
 var specialPower = {
@@ -66,7 +66,6 @@ function loadData() {
         console.log("Found " + maxShips + " ships.")
     } else {
         console.log("No stored values found, using random generation.");
-        populateShipsRandomly();
     }
 }
 
@@ -76,13 +75,13 @@ function parseHull (hullString) {
     
     switch (hullString) {
     
-    case "Galley":
+    case "Small":
         result = HULL.SMALL;
         break;
-    case "Barque":
+    case "Medium":
         result = HULL.MEDIUM;
         break;
-    case "Yacht":
+    case "Big":
         result = HULL.BIG;
         break;
     }
@@ -130,13 +129,6 @@ function parseProjectile (projectileString) {
     return result;
 }
 
-function populateShipsRandomly(){
-    ships[0] = new Ship(0, HULL.SMALL,  GUN.SNIPER,  PROJECTILE.ARMOR_PIERCING, specialPower.ACCEL, true, 0);
-    ships[1] = new Ship(1, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.LIGHT, specialPower.DAMAGE, true, 0);
-    ships[2] = new Ship(2, HULL.BIG,    GUN.BRIGADE, PROJECTILE.NORMAL, specialPower.ACCEL, true, 1);
-    ships[3] = new Ship(3, HULL.MEDIUM, GUN.BARRAGE, PROJECTILE.NORMAL, specialPower.STEALTH, true, 1);
-}
-
 function generateRocks(){
     var rocksTotal = randomBetween(1,3);
     for(i=0; i < rocksTotal; i++){
@@ -176,7 +168,6 @@ function preload() {
     game.load.image('rock1', 'assets/rock1.png');
     game.load.image('rock2', 'assets/rock2.png');
     game.load.image('healthbar', 'assets/healthbar.jpg');
-    game.load.spritesheet('boom', 'assets/explosion.png',32, 32, frameMax = 37);
     game.load.image('replay', 'assets/replay.png');
 
     //Load audio
@@ -186,6 +177,7 @@ function preload() {
     game.load.audio('snipAud', 'assets/audio/sniper.wav');
     game.load.audio('hitAud', 'assets/audio/hit.wav');
     game.load.audio('themeSong', 'assets/audio/themeSong.mp3');
+    game.load.audio('victory', 'assets/audio/victory.mp3');
 
     loadData();
     generateRocks();
@@ -197,23 +189,18 @@ var teams = [];
 var gameShips = [];
 var gameRocks = [];
 var gameTexts = [];
-var score  = [];
 var healthbars = [];
 var player1;
 var player2;
 var player3;
 var player4;
 var cursors;
-var SMALL_SHIP_SCALE = 0.05;
 var ROCKS_SCALE = 0.2;
 
-var shots;
 var APshots;
 var lightShots;
 var barrageShots;
 var shot;
-var shotTimeLeft = 0;
-var shotTimeRight = 0;
 var shotAngle = 0;
 var rocks;
 
@@ -229,6 +216,7 @@ var barAud;
 var snipAud;
 var hitAud;
 var themeSong;
+var vicSong;
 
 function addBackground(assetName) {
     
@@ -272,16 +260,17 @@ function create() {
         }
         tempShip.currentSpeed = 0;
         tempShip.angularFacing = 0;
+        tempShip.shotTimeLeft = 0;
+        tempShip.shotTimeRight = 0;
         
         tempShip.health = ships[i].health;
         tempShip.maxHealth = ships[i].health;
-        tempShip.specialPower = ships[i].specialPower;
         tempShip.damage = ships[i].damage;
         tempShip.reloadTime = ships[i].reloadTime;
         tempShip.range = ships[i].range;
         tempShip.acceleration = ships[i].acceleration;
         tempShip.turnSpeed = ships[i].turnSpeed;
-        tempShip.projectileSpeed = ships[i].speed;
+        tempShip.projectileSpeed = ships[i].projectileSpeed;
         tempShip.ammo = ships[i].ammo;
         
         tempShip.body.collideWorldBounds = true;
@@ -295,8 +284,7 @@ function create() {
         tempShip.isHuman = ships[i].isHuman;
         tempShip.gunType = ships[i].gunType;
         healthbars[i] = new HealthBar(this.game, {x: tempShip.body.x, y: tempShip.body.y+tempShip.body.height, width: 100, height:15, 
-            bar: {color: 'green'}});
-        //this.myHealthBar.setPercent(100); 
+            bar: {color: 'green'}}); 
         gameTexts[i] = game.add.text(tempShip.body.x, tempShip.body.y+tempShip.body.height, 'Player '+(ships[i].id+1),  
             { font: "20px Arial", fill: "#000000"});
 
@@ -355,7 +343,6 @@ function create() {
     }
 
     // SHOT Generation
-    shots = game.add.group();
     
     APshots = game.add.group();
     APshots.enableBody = true;
@@ -363,6 +350,8 @@ function create() {
     
     //  All 40 of them
     APshots.createMultiple(40, 'AP');
+    APshots.setAll('outOfBoundsKill', true);
+    APshots.setAll('checkWorldBounds', true);
     APshots.setAll('anchor.x', 0.5);
     APshots.setAll('anchor.y', 0.5);
     
@@ -372,6 +361,8 @@ function create() {
     
     //  All 40 of them
     lightShots.createMultiple(40, 'lightShot');
+    lightShots.setAll('outOfBoundsKill', true);
+    lightShots.setAll('checkWorldBounds', true);
     lightShots.setAll('anchor.x', 0.5);
     lightShots.setAll('anchor.y', 0.5);
     
@@ -381,12 +372,10 @@ function create() {
     
     //  All 40 of them
     barrageShots.createMultiple(40, 'barrage');
+    barrageShots.setAll('outOfBoundsKill', true);
+    barrageShots.setAll('checkWorldBounds', true);
     barrageShots.setAll('anchor.x', 0.5);
     barrageShots.setAll('anchor.y', 0.5);
-     
-    shots.add(APshots);
-    shots.add(lightShots);
-    shots.add(barrageShots);
            
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
@@ -399,6 +388,7 @@ function create() {
     snipAud = game.add.audio('snipAud');
     hitAud = game.add.audio('hitAud');
     themeSong = game.add.audio('themeSong');
+    vicSong = game.add.audio('victory');
     themeSong.loop=true;
     themeSong.play();
     
@@ -424,9 +414,11 @@ function randomBetween(min, max){
 
 function update() {
     
+    var maxSpeed = 65;
+
     //Player 1 Controls
     if(player1){
-        if (cursors.up.isDown)  {
+        if (cursors.up.isDown && player1.currentSpeed < maxSpeed)  {
             player1.currentSpeed += player1.acceleration;}
         else if (player1.currentSpeed > 0){
                player1.currentSpeed -= player1.acceleration;}
@@ -436,17 +428,16 @@ function update() {
         else if (cursors.right.isDown){
             player1.angularFacing += player1.turnSpeed;}
         
-        if (game.input.keyboard.isDown(Phaser.Keyboard.Z)){
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_2)){
             fireLeft(player1);}
-        
-        if (game.input.keyboard.isDown(Phaser.Keyboard.X)){
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_3)){
             fireRight(player1);}
     }
     
     //Player 2 Controls
     
     if (player2){
-       if (game.input.keyboard.isDown(Phaser.Keyboard.W))  {
+       if (game.input.keyboard.isDown(Phaser.Keyboard.W) && player2.currentSpeed < maxSpeed)  {
         player2.currentSpeed += player2.acceleration;}
     else if (player2.currentSpeed > 0){
            player2.currentSpeed -= player2.acceleration;}
@@ -458,7 +449,6 @@ function update() {
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.Q)){
         fireLeft(player2);}
-    
     if (game.input.keyboard.isDown(Phaser.Keyboard.E)){
         fireRight(player2);} 
     }
@@ -466,7 +456,7 @@ function update() {
     //Player 3 Controls
     
     if (player3){
-        if (game.input.keyboard.isDown(Phaser.Keyboard.I))  {
+        if (game.input.keyboard.isDown(Phaser.Keyboard.I) && player3.currentSpeed < maxSpeed)  {
         player3.currentSpeed += player3.acceleration;}
     else if (player3.currentSpeed > 0){
            player3.currentSpeed -= player3.acceleration;}
@@ -478,7 +468,6 @@ function update() {
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.U)){
         fireLeft(player3);}
-    
     if (game.input.keyboard.isDown(Phaser.Keyboard.O)){
         fireRight(player3);}
     }
@@ -486,7 +475,7 @@ function update() {
     //Player 4 Controls
     
     if (player4){
-       if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8))  {
+       if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8) && player4.currentSpeed < maxSpeed)  {
         player4.currentSpeed += player4.acceleration;}
     else if (player4.currentSpeed > 0){
            player4.currentSpeed -= player4.acceleration;}
@@ -498,7 +487,6 @@ function update() {
     
     if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_7)){
         fireLeft(player4);}
-    
     if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_9)){
         fireRight(player4);} 
     }
@@ -508,21 +496,15 @@ function update() {
         if (ship.angularFacing >= 15)
         {
             ship.rotation += Math.PI/12;
-            //ghost.rotation += Math.PI/12;
             ship.angularFacing -= 15;
         }
     
         if (ship.angularFacing <= -15)
         {
             ship.rotation -= Math.PI/12;
-            //ghost.rotation -= Math.PI/12;
             ship.angularFacing += 15;
         }
     }
-    //if (game.time.now >= movementCycle){
-        //player1.position.set(ghost.position);
-        //movementCycle = game.time.now + 2000;
-    //}
     
     //game.physics.arcade.velocityFromRotation(ghost.rotation, currentSpeed, ghost.body.velocity);
     for (var i in gameShips){
@@ -630,7 +612,7 @@ function inSight(ship, target){
 function fireRight (ship) {
     
     if (ship.health>0){
-        if (game.time.now > shotTimeRight)
+        if (game.time.now > ship.shotTimeRight)
         {
             console.log(ship.ammo);
             switch (ship.ammo){
@@ -645,7 +627,7 @@ function fireRight (ship) {
                 shot.lifespan = ship.range;
                 shot.rotation = ship.rotation;
                 game.physics.arcade.velocityFromRotation((ship.rotation + 1.57), ship.projectileSpeed, shot.body.velocity);
-                shotTimeRight = game.time.now + ship.reloadTime;
+                ship.shotTimeRight = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
                 shot.damage = ship.damage;
                 playFireSound(ship);
@@ -664,7 +646,7 @@ function playFireSound(ship){
 function fireLeft (ship) {
 
     if (ship.health>0){
-        if (game.time.now > shotTimeLeft)
+        if (game.time.now > ship.shotTimeLeft)
         {
             console.log(ship.ammo);
             switch (ship.ammo){
@@ -679,7 +661,7 @@ function fireLeft (ship) {
                 shot.lifespan = ship.range;
                 shot.rotation = ship.rotation;
                 game.physics.arcade.velocityFromRotation((ship.rotation - 1.57), ship.projectileSpeed, shot.body.velocity);
-                shotTimeLeft = game.time.now + ship.reloadTime;
+                ship.shotTimeLeft = game.time.now + ship.reloadTime;
                 shot.shipId=ship.shipId;
                 shot.damage = ship.damage;
                 playFireSound(ship);
@@ -693,20 +675,12 @@ function shipHit (shot, ship) {
     shot.kill();
     hitAud.play();
     if(ship.health <= 0 || isNaN(ship.health)){
-        //explosion = game.add.sprite(ship.body.center.x, ship.body.center.y, 'boom', 0);
-        //anim = explosion.animations.add('boomboom');
-        //anim.play('boomboom');
-        //anim.onComplete.add(clean(explosion), this)
         ship.kill();
         deathAud.play();
     }
 }
 function rockHit (rock, shot) { 
     shot.kill();
-}
-
-function clean(thing){
-    thing.kill();
 }
 
 function checkWinner(){
@@ -722,13 +696,13 @@ function checkWinner(){
         }
         if (survivors.length == 1){
             //Win Screen
-            var winText = game.add.text(50, game.height/2 - 20, "Team " + (survivors[0]+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
+            var winText = game.add.text(50, game.height/2 - 20, "Team " + (parseInt(survivors[0])+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
             winText.stroke = "#de77ae";
             winText.strokeThickness = 16;
-            //  Apply the shadow to the Stroke and the Fill (this is the default)
             winText.setShadow(2, 2, "#333333", 2, true, true);
             button = game.add.button(100, game.height - 160, 'replay', restart, this);
             finished = 1;
+            vicSong.play();
         }
         else if (survivors.length == 0){
             //Draw Screen
@@ -738,7 +712,7 @@ function checkWinner(){
 }
 
 function restart(){
-    window.location = "../index.html";
+    window.location = "index.html";
 }
 
 function contains(a, obj) {
