@@ -6,6 +6,8 @@ var gameScale = 0.8;
 var gameWidth = $(window).width();
 var gameHeight = $(window).height();
 
+projectileVolume = 0.5; // ranges between 0 and 1.
+
     //Enums
 
 var HULL = {
@@ -285,17 +287,19 @@ function create() {
         tempShip.gunType = ships[i].gunType;
         healthbars[i] = new HealthBar(this.game, {x: tempShip.body.x, y: tempShip.body.y+tempShip.body.height, width: 100, height:15, 
             bar: {color: 'green'}}); 
-        gameTexts[i] = game.add.text(tempShip.body.x, tempShip.body.y+tempShip.body.height, 'Player '+(ships[i].id+1),  
-            { font: "20px Arial", fill: "#000000"});
+        gameTexts[i] = game.add.text(healthbars[i].x, healthbars[i].y/2, 'Player '+(ships[i].id+1),  
+            { font: "15px 'EMULOGIC'", fill: "yellow", stroke:"#25a4c4", strokeThickness:2});
 
+            
         gameShips[i]=tempShip;
         if(ships[i].isHuman){
             switch(humanPlayers){
-                case 0 : player1 = gameShips[i]; humanPlayers++; break;
-                case 1 : player2 = gameShips[i]; humanPlayers++; break;
-                case 2 : player3 = gameShips[i]; humanPlayers++; break;
-                case 3 : player4 = gameShips[i]; humanPlayers++; break;
+                case 0 : player1 = gameShips[i]; break;
+                case 1 : player2 = gameShips[i]; break;
+                case 2 : player3 = gameShips[i]; break;
+                case 3 : player4 = gameShips[i]; break;
             }
+            humanPlayers++;
         }
     }
 
@@ -637,9 +641,9 @@ function fireRight (ship) {
 }
 function playFireSound(ship){
     switch(ship.gunType){
-        case GUN.SNIPER: snipAud.play();break;
-        case GUN.BARRAGE: barAud.play();break;
-        case GUN.BRIGADE: brigAud.play();break;
+        case GUN.SNIPER: snipAud.play('', 0, projectileVolume);break;
+        case GUN.BARRAGE: barAud.play('', 0, projectileVolume);break;
+        case GUN.BRIGADE: brigAud.play('', 0, projectileVolume);break;
     }
 }
 
@@ -673,10 +677,10 @@ function fireLeft (ship) {
 function shipHit (shot, ship) {
     ship.health -= shot.damage;
     shot.kill();
-    hitAud.play();
+    hitAud.play('', 0, projectileVolume);
     if(ship.health <= 0 || isNaN(ship.health)){
         ship.kill();
-        deathAud.play();
+        deathAud.play('', 0, projectileVolume);
     }
 }
 function rockHit (rock, shot) { 
@@ -696,11 +700,11 @@ function checkWinner(){
         }
         if (survivors.length == 1){
             //Win Screen
-            var winText = game.add.text(50, game.height/2 - 20, "Team " + (parseInt(survivors[0])+1) + " Wins!", { font: "74px Arial Black", fill: "#c51b7d" });
-            winText.stroke = "#de77ae";
-            winText.strokeThickness = 16;
-            winText.setShadow(2, 2, "#333333", 2, true, true);
-            button = game.add.button(100, game.height - 160, 'replay', restart, this);
+            var winText = game.add.text(50, game.height/2 - 20, "Team " + (parseInt(survivors[0])+1) + " Wins!", { font: "36px 'EMULOGIC'", fill: "orange" });
+            winText.stroke = "#1a273d";
+            winText.strokeThickness = 12;
+            //winText.setShadow(2, 2, "#333333", 2, true, true);
+            //button = game.add.button(100, game.height - 160, 'replay', restart, this);
             finished = 1;
             vicSong.play();
         }
@@ -712,7 +716,7 @@ function checkWinner(){
 }
 
 function restart(){
-    window.location = "index.html";
+    window.location = "game.js";
 }
 
 function contains(a, obj) {
