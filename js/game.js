@@ -261,6 +261,7 @@ function create() {
             tempShip.angle+=180;
         }
         tempShip.currentSpeed = 0;
+        tempShip.travelDistance = 0;
         tempShip.angularFacing = 0;
         tempShip.shotTimeLeft = 0;
         tempShip.shotTimeRight = 0;
@@ -419,14 +420,15 @@ function randomBetween(min, max){
 function update() {
     
     var maxSpeed = 65;
-    var discreteTravelLength = 10;
+    var discreteTravelLength = 25;
 
     //Player 1 Controls
     if(player1){
         if (cursors.up.isDown && player1.currentSpeed < maxSpeed)  {
-                player1.currentSpeed += player1.acceleration;}
+            player1.currentSpeed += player1.acceleration;}
+        //    player1.travelDistance += player1.acceleration;}
         else if (player1.currentSpeed > 0){
-               player1.currentSpeed -= player1.acceleration;}
+            player1.currentSpeed -= player1.acceleration;}
 
         if (cursors.left.isDown){
             player1.angularFacing -= player1.turnSpeed;}
@@ -444,6 +446,7 @@ function update() {
     if (player2){
         if (game.input.keyboard.isDown(Phaser.Keyboard.W) && player2.currentSpeed < maxSpeed)  {
             player2.currentSpeed += player2.acceleration;}
+        //    player2.travelDistance += player2.acceleration;}
         else if (player2.currentSpeed > 0){
                player2.currentSpeed -= player2.acceleration;}
 
@@ -463,6 +466,7 @@ function update() {
     if (player3){
         if (game.input.keyboard.isDown(Phaser.Keyboard.I) && player3.currentSpeed < maxSpeed)  {
             player3.currentSpeed += player3.acceleration;}
+        //    player3.travelDistance += player3.acceleration;}
         else if (player3.currentSpeed > 0){
                player3.currentSpeed -= player3.acceleration;}
 
@@ -482,6 +486,7 @@ function update() {
     if (player4){
         if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8) && player4.currentSpeed < maxSpeed)  {
             player4.currentSpeed += player4.acceleration;}
+        //   player4.travelDistance += player4.acceleration;}
         else if (player4.currentSpeed > 0){
                player4.currentSpeed -= player4.acceleration;}
 
@@ -498,7 +503,7 @@ function update() {
     
     // ROTATION
     for (var i in gameShips){
-        ship = gameShips[i];
+        ship = gameShips[i]
         if (ship.angularFacing >= 15)
         {
             ship.rotation += Math.PI/12;
@@ -510,22 +515,19 @@ function update() {
             ship.rotation -= Math.PI/12;
             ship.angularFacing += 15;
         }
-    }
         
-    // MOVEMENT
-    for (var i in gameShips){
-        ship = gameShips[i];
-        /*ship.travelDistance += ship.currentSpeed;
+        // MOVEMENT
+        ship.travelDistance += ship.currentSpeed/100;
         if (ship.travelDistance >= discreteTravelLength)
         {
-            var xMove = -Math.cos(ship.rotation)*discreteTravelLength;
-            var yMove = Math.sin(ship.rotation)*discreteTravelLength;
-            ship.x += xMove;
-            ship.y += yMove;
+            ship.body.x += Math.cos(ship.rotation)*discreteTravelLength;
+            ship.body.y += Math.sin(ship.rotation)*discreteTravelLength;
             ship.travelDistance -= discreteTravelLength;
-        }*/
-        game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
+        }
+        //game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
     }
+        
+
    
     // COLLISION CHECKS
 
