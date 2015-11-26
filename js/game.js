@@ -496,8 +496,9 @@ function update() {
             fireRight(player4);} 
     }
     
-    for (var ship in gameShips){
-        // ROTATION
+    // ROTATION
+    for (var i in gameShips){
+        ship = gameShips[i];
         if (ship.angularFacing >= 15)
         {
             ship.rotation += Math.PI/12;
@@ -509,9 +510,12 @@ function update() {
             ship.rotation -= Math.PI/12;
             ship.angularFacing += 15;
         }
+    }
         
-        // MOVEMENT
-        ship.travelDistance += ship.currentSpeed;
+    // MOVEMENT
+    for (var i in gameShips){
+        ship = gameShips[i];
+        /*ship.travelDistance += ship.currentSpeed;
         if (ship.travelDistance >= discreteTravelLength)
         {
             var xMove = -Math.cos(ship.rotation)*discreteTravelLength;
@@ -519,8 +523,8 @@ function update() {
             ship.x += xMove;
             ship.y += yMove;
             ship.travelDistance -= discreteTravelLength;
-        }
-        //game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
+        }*/
+        game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
     }
    
     // COLLISION CHECKS
@@ -710,8 +714,6 @@ function checkWinner(){
             var winText = game.add.text(50, game.height/2 - 20, "Team " + (parseInt(survivors[0])+1) + " Wins!", { font: "36px 'EMULOGIC'", fill: "orange" });
             winText.stroke = "#1a273d";
             winText.strokeThickness = 12;
-            //winText.setShadow(2, 2, "#333333", 2, true, true);
-            //button = game.add.button(100, game.height - 160, 'replay', restart, this);
             finished = 1;
             vicSong.play();
         }
