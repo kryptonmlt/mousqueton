@@ -419,11 +419,12 @@ function randomBetween(min, max){
 function update() {
     
     var maxSpeed = 65;
+    var discreteTravelLength = 10;
 
     //Player 1 Controls
     if(player1){
         if (cursors.up.isDown && player1.currentSpeed < maxSpeed)  {
-            player1.currentSpeed += player1.acceleration;}
+                player1.currentSpeed += player1.acceleration;}
         else if (player1.currentSpeed > 0){
                player1.currentSpeed -= player1.acceleration;}
 
@@ -431,7 +432,7 @@ function update() {
             player1.angularFacing -= player1.turnSpeed;}
         else if (cursors.right.isDown){
             player1.angularFacing += player1.turnSpeed;}
-        
+
         if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_2)){
             fireLeft(player1);}
         if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_3)){
@@ -441,62 +442,62 @@ function update() {
     //Player 2 Controls
     
     if (player2){
-       if (game.input.keyboard.isDown(Phaser.Keyboard.W) && player2.currentSpeed < maxSpeed)  {
-        player2.currentSpeed += player2.acceleration;}
-    else if (player2.currentSpeed > 0){
-           player2.currentSpeed -= player2.acceleration;}
+        if (game.input.keyboard.isDown(Phaser.Keyboard.W) && player2.currentSpeed < maxSpeed)  {
+            player2.currentSpeed += player2.acceleration;}
+        else if (player2.currentSpeed > 0){
+               player2.currentSpeed -= player2.acceleration;}
 
-    if (game.input.keyboard.isDown(Phaser.Keyboard.A)){
-        player2.angularFacing -= player2.turnSpeed;}
-    else if (game.input.keyboard.isDown(Phaser.Keyboard.D)){
-        player2.angularFacing += player2.turnSpeed;}
-    
-    if (game.input.keyboard.isDown(Phaser.Keyboard.Q)){
-        fireLeft(player2);}
-    if (game.input.keyboard.isDown(Phaser.Keyboard.E)){
-        fireRight(player2);} 
+        if (game.input.keyboard.isDown(Phaser.Keyboard.A)){
+            player2.angularFacing -= player2.turnSpeed;}
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.D)){
+            player2.angularFacing += player2.turnSpeed;}
+
+        if (game.input.keyboard.isDown(Phaser.Keyboard.Q)){
+            fireLeft(player2);}
+        if (game.input.keyboard.isDown(Phaser.Keyboard.E)){
+            fireRight(player2);} 
     }
     
     //Player 3 Controls
     
     if (player3){
         if (game.input.keyboard.isDown(Phaser.Keyboard.I) && player3.currentSpeed < maxSpeed)  {
-        player3.currentSpeed += player3.acceleration;}
-    else if (player3.currentSpeed > 0){
-           player3.currentSpeed -= player3.acceleration;}
+            player3.currentSpeed += player3.acceleration;}
+        else if (player3.currentSpeed > 0){
+               player3.currentSpeed -= player3.acceleration;}
 
-    if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
-        player3.angularFacing -= player3.turnSpeed;}
-    else if (game.input.keyboard.isDown(Phaser.Keyboard.L)){
-        player3.angularFacing += player3.turnSpeed;}
-    
-    if (game.input.keyboard.isDown(Phaser.Keyboard.U)){
-        fireLeft(player3);}
-    if (game.input.keyboard.isDown(Phaser.Keyboard.O)){
-        fireRight(player3);}
+        if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
+            player3.angularFacing -= player3.turnSpeed;}
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.L)){
+            player3.angularFacing += player3.turnSpeed;}
+
+        if (game.input.keyboard.isDown(Phaser.Keyboard.U)){
+            fireLeft(player3);}
+        if (game.input.keyboard.isDown(Phaser.Keyboard.O)){
+            fireRight(player3);}
     }
     
     //Player 4 Controls
     
     if (player4){
-       if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8) && player4.currentSpeed < maxSpeed)  {
-        player4.currentSpeed += player4.acceleration;}
-    else if (player4.currentSpeed > 0){
-           player4.currentSpeed -= player4.acceleration;}
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8) && player4.currentSpeed < maxSpeed)  {
+            player4.currentSpeed += player4.acceleration;}
+        else if (player4.currentSpeed > 0){
+               player4.currentSpeed -= player4.acceleration;}
 
-    if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_4)){
-        player4.angularFacing -= player4.turnSpeed;}
-    else if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_6)){
-        player4.angularFacing += player4.turnSpeed;}
-    
-    if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_7)){
-        fireLeft(player4);}
-    if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_9)){
-        fireRight(player4);} 
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_4)){
+            player4.angularFacing -= player4.turnSpeed;}
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_6)){
+            player4.angularFacing += player4.turnSpeed;}
+
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_7)){
+            fireLeft(player4);}
+        if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_9)){
+            fireRight(player4);} 
     }
     
-    for (var i in gameShips){
-        ship = gameShips[i];
+    for (var ship in gameShips){
+        // ROTATION
         if (ship.angularFacing >= 15)
         {
             ship.rotation += Math.PI/12;
@@ -508,12 +509,18 @@ function update() {
             ship.rotation -= Math.PI/12;
             ship.angularFacing += 15;
         }
-    }
-    
-    //game.physics.arcade.velocityFromRotation(ghost.rotation, currentSpeed, ghost.body.velocity);
-    for (var i in gameShips){
-        ship = gameShips[i];
-        game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
+        
+        // MOVEMENT
+        ship.travelDistance += ship.currentSpeed;
+        if (ship.travelDistance >= discreteTravelLength)
+        {
+            var xMove = -Math.cos(ship.rotation)*discreteTravelLength;
+            var yMove = Math.sin(ship.rotation)*discreteTravelLength;
+            ship.x += xMove;
+            ship.y += yMove;
+            ship.travelDistance -= discreteTravelLength;
+        }
+        //game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
     }
    
     // COLLISION CHECKS
