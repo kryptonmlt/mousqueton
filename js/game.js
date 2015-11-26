@@ -75,13 +75,13 @@ function parseHull (hullString) {
     
     switch (hullString) {
     
-    case "Galley":
+    case "Small":
         result = HULL.SMALL;
         break;
-    case "Barque":
+    case "Medium":
         result = HULL.MEDIUM;
         break;
-    case "Yacht":
+    case "Big":
         result = HULL.BIG;
         break;
     }
