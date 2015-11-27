@@ -11,29 +11,22 @@ projectileVolume = 0.5; // ranges between 0 and 1.
     //Enums
 
 var HULL = {
-    SMALL: new hull(150, 0.7, 1.2), // fastest but weakest
+    SMALL: new hull(150, 0.7, 1.3), // fastest but weakest
     MEDIUM: new hull(250, 0.6, 1.0),
-    BIG: new hull(400, 0.4, 0.8) // strongest but slowest
+    BIG: new hull(400, 0.5, 0.7) // strongest but slowest
 };
 
 var PROJECTILE = {
-    ARMOR_PIERCING: new projectile(70, 10),
-    NORMAL: new projectile(130, 5),
-    LIGHT: new projectile(200, 0)
+    ARMOR_PIERCING: new projectile(100, 1.5),
+    NORMAL: new projectile(150, 1),
+    LIGHT: new projectile(200, 0.5)
 };
 
 var GUN = {
-    SNIPER: new weapon (80, 2000, 4000), //slowest - high damage
-    BARRAGE: new weapon (30, 950, 3000), //fires a barrage of bombs - longest to reload - medium damage
-    BRIGADE: new weapon (10, 550, 3000) // fastest firing - low damage
+    SNIPER: new weapon (60, 2000, 3000), //slowest - high damage
+    BARRAGE: new weapon (30, 1000, 3000), //medium
+    BRIGADE: new weapon (15, 600, 3000) // fastest firing - low damage
 };
-
-var specialPower = {
-    ACCEL: 0, // increases acceleration
-    DAMAGE: 1, // increases damage output
-    STEALTH: 2 //goes invisible
-};
-
 
 $(window).resize(function() { window.resizeGame(); } );
 
@@ -261,6 +254,7 @@ function create() {
             tempShip.angle+=180;
         }
         tempShip.currentSpeed = 0;
+        tempShip.travelDistance = 0;
         tempShip.angularFacing = 0;
         tempShip.shotTimeLeft = 0;
         tempShip.shotTimeRight = 0;
@@ -277,10 +271,6 @@ function create() {
         
         tempShip.body.collideWorldBounds = true;
         tempShip.anchor.setTo(0.5, 0.5);
-        tempShip.body.drag.set(10);
-        tempShip.body.angularDrag = 40;
-        tempShip.body.maxAngular = 30;
-        tempShip.body.maxVelocity = 30;
         tempShip.teamId = ships[i].teamId;
         tempShip.shipId = ships[i].id;
         tempShip.isHuman = ships[i].isHuman;
@@ -424,9 +414,10 @@ function update() {
     //Player 1 Controls
     if(player1){
         if (cursors.up.isDown && player1.currentSpeed < maxSpeed)  {
-                player1.currentSpeed += player1.acceleration;}
+            player1.currentSpeed += player1.acceleration;}
+        //    player1.travelDistance += player1.acceleration;}
         else if (player1.currentSpeed > 0){
-               player1.currentSpeed -= player1.acceleration;}
+            player1.currentSpeed -= player1.acceleration;}
 
         if (cursors.left.isDown){
             player1.angularFacing -= player1.turnSpeed;}
@@ -444,6 +435,7 @@ function update() {
     if (player2){
         if (game.input.keyboard.isDown(Phaser.Keyboard.W) && player2.currentSpeed < maxSpeed)  {
             player2.currentSpeed += player2.acceleration;}
+        //    player2.travelDistance += player2.acceleration;}
         else if (player2.currentSpeed > 0){
                player2.currentSpeed -= player2.acceleration;}
 
@@ -463,6 +455,7 @@ function update() {
     if (player3){
         if (game.input.keyboard.isDown(Phaser.Keyboard.I) && player3.currentSpeed < maxSpeed)  {
             player3.currentSpeed += player3.acceleration;}
+        //    player3.travelDistance += player3.acceleration;}
         else if (player3.currentSpeed > 0){
                player3.currentSpeed -= player3.acceleration;}
 
@@ -482,6 +475,7 @@ function update() {
     if (player4){
         if (game.input.keyboard.isDown(Phaser.Keyboard.NUMPAD_8) && player4.currentSpeed < maxSpeed)  {
             player4.currentSpeed += player4.acceleration;}
+        //   player4.travelDistance += player4.acceleration;}
         else if (player4.currentSpeed > 0){
                player4.currentSpeed -= player4.acceleration;}
 
@@ -496,8 +490,9 @@ function update() {
             fireRight(player4);} 
     }
     
-    for (var ship in gameShips){
-        // ROTATION
+    // ROTATION
+    for (var i in gameShips){
+        ship = gameShips[i]
         if (ship.angularFacing >= 15)
         {
             ship.rotation += Math.PI/12;
@@ -511,17 +506,17 @@ function update() {
         }
         
         // MOVEMENT
-        ship.travelDistance += ship.currentSpeed;
+        ship.travelDistance += ship.currentSpeed/100;
         if (ship.travelDistance >= discreteTravelLength)
         {
-            var xMove = -Math.cos(ship.rotation)*discreteTravelLength;
-            var yMove = Math.sin(ship.rotation)*discreteTravelLength;
-            ship.x += xMove;
-            ship.y += yMove;
+            ship.body.x += Math.cos(ship.rotation)*discreteTravelLength;
+            ship.body.y += Math.sin(ship.rotation)*discreteTravelLength;
             ship.travelDistance -= discreteTravelLength;
         }
         //game.physics.arcade.velocityFromRotation(ship.rotation, ship.currentSpeed, ship.body.velocity);
     }
+        
+
    
     // COLLISION CHECKS
 
@@ -554,10 +549,7 @@ function update() {
             }
         }
         if(gameShips[i].health <= 0 || isNaN(gameShips[i].health)){//ship died
-            if(gameTexts[i].alpha){
-                gameTexts[i].alpha=0;
-                healthbars[i].setPosition(game.world.width+500,game.world.height+500);
-            }
+            
         }
     }
 
@@ -575,6 +567,11 @@ function update() {
             tempY = gameShips[i].body.y+gameShips[i].body.height;
             healthbars[i].setPosition(tempX,tempY);
             healthbars[i].setPercent((gameShips[i].health/gameShips[i].maxHealth)*100);
+        }else{
+            if(gameTexts[i].alpha){
+                gameTexts[i].alpha=0;
+                healthbars[i].setPosition(game.world.width+500,game.world.height+500);
+            }
         }
     }
 
@@ -710,8 +707,6 @@ function checkWinner(){
             var winText = game.add.text(50, game.height/2 - 20, "Team " + (parseInt(survivors[0])+1) + " Wins!", { font: "36px 'EMULOGIC'", fill: "orange" });
             winText.stroke = "#1a273d";
             winText.strokeThickness = 12;
-            //winText.setShadow(2, 2, "#333333", 2, true, true);
-            //button = game.add.button(100, game.height - 160, 'replay', restart, this);
             finished = 1;
             vicSong.play();
         }
