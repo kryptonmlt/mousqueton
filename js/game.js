@@ -409,7 +409,7 @@ function randomBetween(min, max){
 function update() {
     
     var maxSpeed = 65;
-    var discreteTravelLength = 25;
+    var discreteTravelLength = 10;
 
     //Player 1 Controls
     if(player1){
